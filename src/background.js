@@ -3,6 +3,7 @@
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+import db from './db'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -13,6 +14,20 @@ let win
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
+
+const isLogin = async () => {
+  return Promise((resolve, reject) => {
+    db.User.count({}, (err, count) => {
+      if (err) {
+        reject()
+      } else if (count === 0) {
+        resolve()
+      } else {
+        reject()
+      }
+    })
+  })
+}
 
 function createWindow() {
   // Create the browser window.
