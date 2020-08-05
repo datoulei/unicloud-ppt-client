@@ -30,6 +30,7 @@ const isLogin = async () => {
 }
 
 function createWindow() {
+  isLogin()
   // Create the browser window.
   win = new BrowserWindow({
     width: 800,
