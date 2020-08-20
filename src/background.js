@@ -15,22 +15,22 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
 
-const isLogin = async () => {
-  return Promise((resolve, reject) => {
-    db.User.count({}, (err, count) => {
-      if (err) {
-        reject()
-      } else if (count === 0) {
-        resolve()
-      } else {
-        reject()
-      }
-    })
-  })
-}
+// const isLogin = async () => {
+//   return Promise((resolve, reject) => {
+//     db.User.count({}, (err, count) => {
+//       if (err) {
+//         reject()
+//       } else if (count === 0) {
+//         resolve()
+//       } else {
+//         reject()
+//       }
+//     })
+//   })
+// }
 
 function createWindow() {
-  isLogin()
+  // isLogin()
   // Create the browser window.
   win = new BrowserWindow({
     width: 800,
