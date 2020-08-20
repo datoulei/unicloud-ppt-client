@@ -5,7 +5,7 @@ module.exports = {
     electronBuilder: {
       nodeIntegration: true,
       builderOptions: {
-        appId: 'com.uniecloud.ppt',
+        appId: 'com.uniecloud.ppt-client',
         productName: 'ppt-client',
         copyright: 'Copyright©unicloud',
         directories: {
@@ -16,13 +16,17 @@ module.exports = {
           icon: 'public/favicon.ico', // 图标256*256
           target: [
             {
-              target: 'dir', // 不打包为安装程序
+              target: 'nsis', // 不打包为安装程序
               arch: [
                 'x64' //64位
                 // "ia32", //32位
               ]
             }
-          ]
+          ],
+          "publish": {
+            provider: 'github',
+            token: 'a70174c43c2f4ade9c570f054d4912a37b0895b1',
+          }
         }
       }
     }
