@@ -3,7 +3,10 @@
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
-import db from './db'
+import log from 'electron-log'
+import { autoUpdater } from "electron-updater"
+log.transports.file.level = "debug"
+autoUpdater.logger = log
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -15,22 +18,8 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
 
-// const isLogin = async () => {
-//   return Promise((resolve, reject) => {
-//     db.User.count({}, (err, count) => {
-//       if (err) {
-//         reject()
-//       } else if (count === 0) {
-//         resolve()
-//       } else {
-//         reject()
-//       }
-//     })
-//   })
-// }
 
 function createWindow() {
-  // isLogin()
   // Create the browser window.
   win = new BrowserWindow({
     width: 800,
@@ -78,6 +67,7 @@ app.on('activate', () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
+  autoUpdater.checkForUpdatesAndNotify()
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     try {
