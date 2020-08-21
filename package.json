@@ -1,17 +1,21 @@
 {
-  "name": "ppt_management",
+  "name": "ppt_management_client",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "electron:build": "vue-cli-service electron:build",
+    "electron:build": "vue-cli-service electron:build -p always",
+    "electron:build-win": "vue-cli-service electron:build --windows",
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
   "main": "background.js",
+  "publish": [
+    "github"
+  ],
   "dependencies": {
     "core-js": "^3.6.5",
     "electron-log": "^4.2.4",

@@ -13,7 +13,7 @@ module.exports = {
         },
         win: {
           // win相关配置
-          icon: 'public/favicon.ico', // 图标256*256
+          icon: 'public/icon.png', // 图标256*256
           target: [
             {
               target: 'nsis', // 不打包为安装程序
@@ -23,9 +23,19 @@ module.exports = {
               ]
             }
           ],
-          "publish": ['github']
-        }
+
+        },
+        publish: ['github']
       }
     }
-  }
+  },
+  css: {
+    loaderOptions: {
+      less: {
+        lessOptions: {
+          javascriptEnabled: true,
+        },
+      },
+    },
+  },
 }

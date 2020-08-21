@@ -5,6 +5,8 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import log from 'electron-log'
 import { autoUpdater } from "electron-updater"
+log.transports.console.level = false;
+log.transports.console.level = 'silly'
 log.transports.file.level = "debug"
 autoUpdater.logger = log
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -39,6 +41,9 @@ function createWindow() {
     createProtocol('app')
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
+
+    autoUpdater.checkForUpdatesAndNotify()
+
   }
 
   win.on('closed', () => {
@@ -67,7 +72,7 @@ app.on('activate', () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
-  autoUpdater.checkForUpdatesAndNotify()
+  log.info('app ready')
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     try {
