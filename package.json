@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "electron:build": "vue-cli-service electron:build -p always",
+    "electron:build": "vue-cli-service electron:build",
     "electron:build-win": "vue-cli-service electron:build --windows",
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
@@ -15,47 +15,44 @@
   "main": "background.js",
   "repository": "git@github.com:datoulei/uniecloud-ppt-client.git",
   "dependencies": {
+    "ant-design-vue": "^1.6.4",
     "core-js": "^3.6.5",
     "electron-log": "^4.2.4",
+    "flex.css": "^1.1.7",
+    "fs-extra": "^9.0.1",
+    "lodash": "^4.17.19",
+    "mockjs": "^1.1.0",
+    "moment": "^2.27.0",
     "nedb": "^1.8.0",
+    "normalize.css": "^8.0.1",
+    "sortablejs": "^1.10.2",
+    "v-clipboard": "^2.2.3",
     "vue": "^2.6.11",
-    "vue-router": "^3.2.0",
-    "vuex": "^3.4.0"
+    "vue-ls": "^3.2.1",
+    "vue-router": "^3.4.3",
+    "vuex": "^3.5.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.4.0",
-    "@vue/cli-plugin-eslint": "~4.4.0",
-    "@vue/cli-plugin-router": "^4.4.6",
-    "@vue/cli-plugin-vuex": "^4.4.6",
-    "@vue/cli-service": "~4.4.0",
-    "axios": "^0.18.0",
+    "@types/electron": "^1.6.10",
+    "@vue/cli-plugin-babel": "~4.5.3",
+    "@vue/cli-plugin-eslint": "~4.5.3",
+    "@vue/cli-plugin-router": "~4.5.3",
+    "@vue/cli-plugin-vuex": "~4.5.3",
+    "@vue/cli-service": "~4.5.3",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "axios": "^0.19.2",
     "babel-eslint": "^10.1.0",
-    "electron": "^9.2.0",
-    "electron-devtools-installer": "^3.1.0",
+    "electron": "^9.2.1",
+    "electron-devtools-installer": "^3.1.1",
     "electron-updater": "^4.3.4",
-    "eslint": "^6.7.2",
+    "eslint": "^7.7.0",
+    "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-vue": "^6.2.2",
+    "less": "^3.12.2",
+    "less-loader": "^6.2.0",
+    "prettier": "^2.0.5",
     "vue-cli-plugin-axios": "0.0.4",
     "vue-cli-plugin-electron-builder": "~2.0.0-rc.4",
     "vue-template-compiler": "^2.6.11"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "babel-eslint"
-    },
-    "rules": {}
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+  }
 }

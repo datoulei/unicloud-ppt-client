@@ -1,0 +1,62 @@
+@import './ant-design-vars.less';
+
+.loop (@index) when (@index > 0) {
+  .m-t-@{index} {
+    margin-top: 1px * @index;
+  }
+  .m-r-@{index} {
+    margin-right: 1px * @index;
+  }
+  .m-b-@{index} {
+    margin-bottom: 1px * @index;
+  }
+  .m-l-@{index} {
+    margin-left: 1px * @index;
+  }
+  .p-t-@{index} {
+    padding-top: 1px * @index;
+  }
+  .p-r-@{index} {
+    padding-right: 1px * @index;
+  }
+  .p-b-@{index} {
+    padding-bottom: 1px * @index;
+  }
+  .p-l-@{index} {
+    padding-left: 1px * @index;
+  }
+  .w-@{index} {
+    width: 1px * @index;
+  }
+  .h-@{index} {
+    height: 1px * @index;
+  }
+  .loop(@index - 1);
+}
+.loop(100);
+
+p {
+  margin: 0;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.text-primary {
+  color: @primary-color;
+}
+
+.icon-button {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  opacity: 0.6;
+  user-select: none;
+  &:hover {
+    opacity: 1;
+  }
+  & + .icon-button {
+    margin-left: 24px;
+  }
+}
