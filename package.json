@@ -13,9 +13,7 @@
     "postuninstall": "electron-builder install-app-deps"
   },
   "main": "background.js",
-  "publish": [
-    "github"
-  ],
+  "repository": "git@github.com:datoulei/uniecloud-ppt-client.git",
   "dependencies": {
     "core-js": "^3.6.5",
     "electron-log": "^4.2.4",
