@@ -1,6 +1,7 @@
 <template>
   <div class="page">
     <img src="/images/icon_close.png" class="close-btn" @click="handleClose" />
+    <img src="/images/logo.png" class="logo" />
     <div class="main">
       <h2 class="title">登录</h2>
       <div class="body m-t-24">
@@ -154,8 +155,11 @@ export default {
             break;
         }
         await this.$message.success('登录成功！', 1);
+        this.$lowdb.set('isLogin', true).write();
         await ipcRenderer.invoke('channel', { type: 'login' });
-      } catch (error) {}
+      } catch (error) {
+        console.log('handleSubmit -> error', error);
+      }
       this.loading = false;
     },
     handleClose() {
@@ -182,10 +186,10 @@ export default {
   }
   .main {
     position: absolute;
-    top: 40px;
+    top: 52px;
     right: 64px;
     width: 332px;
-    height: 368px;
+    height: 424px;
     background-color: #fff;
     border-radius: 6px;
     padding: 40px 25px;
@@ -231,6 +235,13 @@ export default {
       border-radius: 2px;
       border: 1px solid rgba(229, 229, 229, 1);
     }
+  }
+  .logo {
+    position: absolute;
+    left: 93px;
+    top: 198px;
+    width: 192px;
+    height: 52px;
   }
 }
 </style>

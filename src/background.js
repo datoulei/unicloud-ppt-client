@@ -5,6 +5,7 @@ import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import * as path from 'path';
 import * as fs from 'fs-extra';
+import lowdb from './lowdb'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
 log.transports.console.level = false;
@@ -30,7 +31,7 @@ function createWindow() {
   win = new BrowserWindow({
     frame: false,
     fullscreen: true,
-    show: false,
+    // fullscreenable: true,
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
@@ -58,11 +59,12 @@ function createWindow() {
 
 function createLoginWindow() {
   // Create the browser window.
-
+  console.log('open login window');
   loginWin = new BrowserWindow({
     frame: false,
-    width: 756,
-    height: 448,
+    width: 868,
+    height: 528,
+    fullscreen: false,
     resizable: false,
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
@@ -109,7 +111,8 @@ app.on("activate", () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
-  console.log('is ready');
+  const isLogin = lowdb.get('isLogin').value()
+  console.log('is ready. isLogin=', isLogin);
   globalShortcut.register('CommandOrControl+Shift+J', () => {
     log.debug('打开控制台')
     if (win) {
@@ -127,7 +130,11 @@ app.on("ready", async () => {
       console.error("Vue Devtools failed to install:", e.toString());
     }
   }
-  createWindow();
+  if (isLogin) {
+    createWindow();
+  } else {
+    createLoginWindow();
+  }
 });
 
 // Exit cleanly on request from parent process in development mode.
@@ -150,25 +157,26 @@ ipcMain.handle('channel', (event, { type, data }) => {
   let modal;
   console.log("主进程监听，type：%s， data: %o", type, data)
   switch (type) {
-    case 'init':
-      if (data.isLogin) {
-        win.show()
-      } else {
-        createLoginWindow();
-      }
-      return { code: 1 }
-    case 'minimize':
-      if (win && !win.isMinimized()) {
-        win.minimize();
-      }
-      return { code: 1 }
-    case 'maximize':
-      if (win && !win.isMaximized()) {
-        win.maximize();
-      } else {
-        win.unmaximize();
-      }
-      return { code: 1 }
+    // case 'init':
+    //   if (data.isLogin) {
+    //     win.show()
+    //     win.maximize()
+    //   } else {
+    //     createLoginWindow();
+    //   }
+    //   return { code: 1 }
+    // case 'minimize':
+    //   if (win && !win.isMinimized()) {
+    //     win.minimize();
+    //   }
+    //   return { code: 1 }
+    // case 'maximize':
+    //   if (win && !win.isMaximized()) {
+    //     win.maximize();
+    //   } else {
+    //     win.unmaximize();
+    //   }
+    //   return { code: 1 }
     case 'quit':
       if (loginWin && loginWin.closable) {
         loginWin.close()
@@ -179,19 +187,16 @@ ipcMain.handle('channel', (event, { type, data }) => {
       return { code: 1 }
     case 'login':
       // 关闭当前窗口，打开主窗口
+      createWindow();
       if (loginWin) {
         loginWin.close()
       }
-      if (win) {
-        win.reload()
-        win.show()
-      }
       return { code: 1 }
     case 'logout':
-      if (win) {
-        win.hide()
-      }
       createLoginWindow();
+      if (win) {
+        win.close()
+      }
       return { code: 1 }
     case 'preview':
       if (data.url.endsWith('.pdf')) {
