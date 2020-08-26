@@ -33,7 +33,7 @@
   }
   .loop(@index - 1);
 }
-.loop(100);
+.loop(200);
 
 p {
   margin: 0;
@@ -45,6 +45,12 @@ p {
 
 .text-primary {
   color: @primary-color;
+}
+
+.text-hidden {
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  white-space: nowrap;
 }
 
 .icon-button {

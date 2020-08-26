@@ -83,4 +83,7 @@ export default {
     line-height: 22px;
   }
 }
+.body {
+  padding: 24px;
+}
 </style>

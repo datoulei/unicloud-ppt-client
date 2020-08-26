@@ -41,7 +41,7 @@ export default {
     handleAction(key) {
       switch (key) {
         case 'back':
-          this.$router.go(-1);
+          this.$router.replace({ name: 'Home' });
           break;
         case 'logout':
           this.logout();
