@@ -3,6 +3,7 @@
 import { app, session, shell, protocol, BrowserWindow, ipcMain, globalShortcut } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
+import * as URL from 'url';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import lowdb from './lowdb'
@@ -155,6 +156,7 @@ if (isDevelopment) {
 // 主进程监听
 ipcMain.handle('channel', (event, { type, data }) => {
   let modal;
+  let cacheModal;
   console.log("主进程监听，type：%s， data: %o", type, data)
   switch (type) {
     // case 'init':
@@ -199,44 +201,87 @@ ipcMain.handle('channel', (event, { type, data }) => {
       }
       return { code: 1 }
     case 'preview':
-      if (data.url.endsWith('.pdf')) {
-        modal = new BrowserWindow({
-          fullscreen: true,
-          resizable: false,
-          alwaysOnTop: true,
-          parent: win,
+      // if (data.url.includes('.pdf')) {
+      //   modal = new BrowserWindow({
+      //     fullscreen: true,
+      //     resizable: false,
+      //     alwaysOnTop: true,
+      //     parent: win,
+      //   });
+      //   modal.loadURL(data.url)
+      // } else if (data.url.includes('.ppt') || data.url.includes('.pptx') || data.url.includes('.pps') || data.url.includes('.ppsx')) {
+      modal = new BrowserWindow({
+        show: false,
+        webPreferences: {
+          session: session.fromPartition('preview')
+        }
+      });
+      modal.webContents.session.on('will-download', async (event, item) => {
+        console.log("item", item)
+        console.log('开始下载文件')
+        const fileName = item.getFilename();
+        const url = item.getURL();
+        const startTime = item.getStartTime();
+        const initialState = item.getState();
+        const downloadPath = app.getPath('userData');
+        const urlObj = URL.parse(url);
+
+        let fileNum = 0;
+        let savePath = path.join(downloadPath, 'temp', fileName);
+
+        // savePath基础信息
+        const ext = path.extname(savePath);
+        const name = path.basename(savePath, ext);
+        const dir = path.dirname(savePath);
+
+        // 文件名自增逻辑
+        while (fs.pathExistsSync(savePath)) {
+          fileNum += 1;
+          savePath = path.format({
+            dir,
+            ext,
+            name: `${name}(${fileNum})`,
+          });
+        }
+
+
+        // 设置下载目录，阻止系统dialog的出现
+        item.setSavePath(savePath);
+
+        // 下载任务完成
+        item.on('done', (e, state) => { // eslint-disable-line
+          shell.openPath(savePath)
         });
-      } else if (data.url.endsWith('.ppt') || data.url.endsWith('.pptx') || data.url.endsWith('.pps') || data.url.endsWith('.ppsx')) {
-        modal = new BrowserWindow({
+
+      })
+      modal.webContents.downloadURL(data.url)
+      // }
+      return { code: 1 }
+    case 'cacheFile':
+      return new Promise((resolve, reject) => {
+        cacheModal = new BrowserWindow({
           show: false,
           webPreferences: {
-            session: session.fromPartition('ppt')
+            session: session.fromPartition('cache')
           }
         });
-        modal.webContents.session.on('will-download', async (event, item) => {
-          console.log('开始下载文件')
+        cacheModal.webContents.session.on('will-download', async (event, item) => {
+          console.log('开始缓存文件')
           const fileName = item.getFilename();
           const url = item.getURL();
-          const startTime = item.getStartTime();
-          const initialState = item.getState();
-          const downloadPath = app.getPath('downloads');
+          const downloadPath = app.getPath('userData');
+          const urlObj = URL.parse(url);
+          const id = urlObj.query.split('=')[1]
 
-          let fileNum = 0;
-          let savePath = path.join(downloadPath, fileName);
-
-          // savePath基础信息
-          const ext = path.extname(savePath);
-          const name = path.basename(savePath, ext);
-          const dir = path.dirname(savePath);
+          const saveBasePath = path.join(downloadPath, 'downloads', id);
+          let savePath = path.join(saveBasePath, fileName);
+          console.log("savePath", savePath)
 
           // 文件名自增逻辑
-          while (fs.pathExistsSync(savePath)) {
-            fileNum += 1;
-            savePath = path.format({
-              dir,
-              ext,
-              name: `${name}(${fileNum})`,
-            });
+          if (fs.pathExistsSync(savePath)) {
+            fs.removeSync(savePath);
+          } else if (!fs.existsSync(saveBasePath)) {
+            fs.mkdirpSync(saveBasePath);
           }
 
           // 设置下载目录，阻止系统dialog的出现
@@ -244,15 +289,22 @@ ipcMain.handle('channel', (event, { type, data }) => {
 
           // 下载任务完成
           item.on('done', (e, state) => { // eslint-disable-line
-            shell.openPath(savePath)
+            // 写入缓存
+            try {
+              lowdb.set(`cache${id}`, savePath).write()
+              console.log('缓存成功')
+              resolve()
+            } catch (error) {
+              console.log('缓存失败', error);
+              reject()
+            }
           });
 
         })
-      }
-      modal.loadURL(data.url)
-      return { code: 1 }
-    case 'download':
-      win.webContents.downloadURL(data.url)
+        cacheModal.webContents.downloadURL(data.url)
+      })
+    case 'openCacheFile':
+      shell.openPath(data.url)
       return { code: 1 }
     default:
       console.log('未知操作：', type)

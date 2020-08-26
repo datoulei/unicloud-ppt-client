@@ -42,6 +42,7 @@ export default {
 .main-schedule-item {
   background: rgba(245, 245, 245, 1);
   border: 1px solid rgba(229, 229, 229, 1);
+  cursor: pointer;
   .header {
     text-align: center;
     &.red {

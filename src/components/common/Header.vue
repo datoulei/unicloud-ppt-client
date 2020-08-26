@@ -1,7 +1,7 @@
 <template>
   <div class="header" flex="cross:center">
     <p flex-box="1" class="title">{{ screen.name }}</p>
-    <img src="/images/header_logo.png" alt="" class="logo" />
+    <img :src="screen.logo" alt="" class="logo" />
   </div>
 </template>
 
