@@ -1,5 +1,8 @@
 <template>
-  <div :class="['main-schedule-item', `column-${column}`]">
+  <div
+    :class="['main-schedule-item', `column-${column}`]"
+    @click="handleDetail"
+  >
     <div :class="['header', style]">
       <span class="time">{{ $moment(item.startDate).format('HH:mm') }}</span>
     </div>
@@ -25,8 +28,8 @@ export default {
   methods: {
     handleDetail() {
       this.$router.push({
-        name: 'Screen',
-        params: { screenId: this.screen.id },
+        name: 'MainSchedule',
+        params: { id: this.item.id },
       });
     },
   },

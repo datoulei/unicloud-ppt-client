@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import BaseLayout from "@/layout/BaseLayout";
 import Home from '../views/Home.vue'
+import MainSchedule from '../views/MainSchedule.vue'
 import Login from '../views/Login.vue'
 
 Vue.use(VueRouter)
@@ -16,7 +17,12 @@ const routes = [
         path: '/home',
         name: 'Home',
         component: Home
-      }
+      },
+      {
+        path: '/schedule/:id',
+        name: 'MainSchedule',
+        component: MainSchedule
+      },
     ]
   },
   {
