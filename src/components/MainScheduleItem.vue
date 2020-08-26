@@ -26,7 +26,9 @@ export default {
     ...mapGetters(['style']),
   },
   methods: {
+    ...mapActions('mainSchedule', ['selectMainSchedule']),
     handleDetail() {
+      this.selectMainSchedule(this.item);
       this.$router.push({
         name: 'MainSchedule',
         params: { id: this.item.id },

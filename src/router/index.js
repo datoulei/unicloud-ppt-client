@@ -54,7 +54,6 @@ router.beforeEach((to, from, next) => {
       break;
   }
   if (!isLogin) {
-    console.log('用户未登录，跳转登录页面')
     // 未登录
     if (to.path !== '/login') {
       next('/login');
@@ -62,7 +61,6 @@ router.beforeEach((to, from, next) => {
       next();
     }
   } else {
-    console.log('用户已登录，跳转首页')
     // 已登录
     if (to.path === '/login') {
       next('/')
