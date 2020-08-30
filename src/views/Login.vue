@@ -148,6 +148,7 @@ export default {
               { code: this.localForm.code },
             );
             this.$ls.set('loginType', 'local');
+            this.$ls.set('baseURL', `http://${this.localForm.ip}:3000`);
             this.$ls.set('code', this.localForm.code);
             this.$ls.set('screen', res.screen);
             break;

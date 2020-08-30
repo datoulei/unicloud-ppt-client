@@ -22,10 +22,18 @@ _axios.interceptors.request.use(
   function (config) {
     const loginType = Vue.ls.get('loginType')
     const token = Vue.ls.get('token')
+    const baseURL = Vue.ls.get('baseURL')
     if (loginType === 'internet') {
+      if (config.baseURL !== process.env.VUE_APP_BASE_URL) {
+        config.baseURL = process.env.VUE_APP_BASE_URL
+      }
       Object.assign(config.headers, {
         'Authorization': `Bearer ${token}`
       })
+    } else {
+      if (config.baseURL !== baseURL) {
+        config.baseURL = baseURL
+      }
     }
     // Do something before request is sent
     return config;
