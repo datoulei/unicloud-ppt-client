@@ -144,13 +144,13 @@ export default {
           case 'local':
             await this.$refs.localForm.validate();
             res = await this.$axios.post(
-              `http://${this.localForm.ip}:3000/admin/login`,
+              `http://${this.localForm.ip}:3000/screen/login`,
               { code: this.localForm.code },
             );
             this.$ls.set('loginType', 'local');
             this.$ls.set('baseURL', `http://${this.localForm.ip}:3000`);
             this.$ls.set('code', this.localForm.code);
-            this.$ls.set('screen', res.screen);
+            this.$ls.set('screen', res);
             break;
           default:
             break;
