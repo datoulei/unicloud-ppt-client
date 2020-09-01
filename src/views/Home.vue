@@ -2,7 +2,7 @@
   <div class="home">
     <div class="header" flex="cross:center">
       <p flex-box="1" class="title">{{ screen.name }}</p>
-      <img src="/images/header_logo.png" class="logo" />
+      <img :src="logo" class="logo" />
     </div>
     <div class="body">
       <template v-for="date in sortDates">
@@ -33,6 +33,16 @@ export default {
     },
     sortDates() {
       return this.$lodash.sortBy(this.$lodash.keys(this.group));
+    },
+    logo() {
+      const loginType = this.$ls.get('loginType');
+      if (loginType === 'internet') {
+        return this.screen.logo;
+      } else if (this.screen.logo && this.screen.logo !== '/images/logo.png') {
+        const baseURL = this.$ls.get('baseURL');
+        return `${baseURL}/${this.screen.logo}`;
+      }
+      return '/images/logo.png';
     },
   },
   mounted() {

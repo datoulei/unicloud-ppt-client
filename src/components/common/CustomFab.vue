@@ -14,7 +14,7 @@
       <a-tooltip placement="left" title="刷新">
         <div class="menu-item refresh" @click="handleAction('refresh')"></div>
       </a-tooltip>
-      <a-tooltip placement="left" title="切换列数">
+      <a-tooltip v-if="routerName === 'Home'" placement="left" title="切换列数">
         <div class="menu-item column" @click="handleAction('column')"></div>
       </a-tooltip>
     </div>
@@ -34,10 +34,14 @@ export default {
     style() {
       return this.screen.style;
     },
+    routerName() {
+      return this.$route.name;
+    },
   },
   methods: {
     ...mapActions(['toggleColumn']),
     ...mapActions('mainSchedule', ['getMainSchedules']),
+    ...mapActions('subSchedule', ['getSubSchedules']),
     handleAction(key) {
       switch (key) {
         case 'back':
@@ -47,7 +51,11 @@ export default {
           this.logout();
           break;
         case 'refresh':
-          this.getMainSchedules();
+          if (this.$route.name === 'Home') {
+            this.getMainSchedules();
+          } else if (this.$route.name === 'MainSchedule') {
+            this.getSubSchedules();
+          }
           break;
         case 'column':
           this.toggleColumn();

@@ -134,7 +134,7 @@ export default {
           case 'internet':
             await this.$refs.internetForm.validate();
             res = await this.$axios.post(
-              '/auth/clientLogin',
+              `${process.env.VUE_APP_BASE_URL}/auth/clientLogin`,
               this.internetForm,
             );
             this.$ls.set('loginType', 'internet');

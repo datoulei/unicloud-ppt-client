@@ -3,14 +3,14 @@
     <template v-if="style === 'light'">
       <div class="p-t-24">
         <div class="light-body p-l-24 p-t-16 p-r-16">
-          <img :src="item.avatar" alt="" class="avatar" />
+          <img :src="avatar" alt="" class="avatar" />
           <div class="row" flex>
             <div class="content p-l-121" flex-box="1">
               <p class="name">{{ item.guestName }}</p>
               <p class="work m-t-8">{{ item.work }}</p>
             </div>
             <img
-              v-show="showDownloadButton && !cacheFile"
+              v-show="showDownloadButton"
               src="/images/icon_download.png"
               class="download"
               @click.stop="handleCache"
@@ -29,18 +29,18 @@
       <div :class="['header', style]" flex="cross:center">
         <span class="time" flex-box="1">{{ duration }}</span>
         <img
-          v-show="showDownloadButton && !cacheFile"
+          v-show="showDownloadButton"
           src="/images/icon_download_white.png"
           class="download"
           @click.stop="handleCache"
         />
       </div>
       <div class="body" flex>
-        <img :src="item.avatar" alt="" class="avatar" />
+        <img :src="avatar" alt="" class="avatar" />
         <div class="content m-l-16" flex-box="1">
           <p class="guest">{{ item.guestName }}</p>
           <p class="name text-hidden m-t-8">
-            {{ item.name }}12312312312312312312312321313
+            {{ item.name }}
           </p>
           <p class="work m-t-16">{{ item.work }}</p>
         </div>
@@ -66,13 +66,33 @@ export default {
   created() {
     this.loadCache();
   },
+  watch: {
+    'item.ppt'() {
+      this.loadCache();
+    },
+  },
   computed: {
     ...mapGetters(['style']),
     duration() {
       return `${this.item.startTime}-${this.item.endTime}`;
     },
     showDownloadButton() {
-      return !!this.item.ppt;
+      if (!this.item.ppt) {
+        return false;
+      } else if (this.cacheFile) {
+        const pptFile = this.item.ppt.split('/').pop();
+        return this.cacheFile.split('/').pop() !== pptFile;
+      }
+      return true;
+    },
+    avatar() {
+      const loginType = this.$ls.get('loginType');
+      if (loginType === 'internet') {
+        return this.item.avatar;
+      } else {
+        const baseURL = this.$ls.get('baseURL');
+        return `${baseURL}/${this.item.avatar}`;
+      }
     },
   },
   methods: {
