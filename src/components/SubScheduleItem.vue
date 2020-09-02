@@ -239,6 +239,7 @@ export default {
     color: rgba(51, 51, 51, 1);
     line-height: 32px;
     min-width: 140px;
+    white-space: nowrap;
   }
   .name {
     font-size: 20px;

@@ -6,8 +6,10 @@
     <div :class="['header', style]">
       <span class="time">{{ $moment(item.startDate).format('HH:mm') }}</span>
     </div>
-    <div class="body">
-      <span class="name">{{ item.name }}</span>
+    <div ref="container" class="body">
+      <span ref="text" :class="['name', scroll && 'animate']">
+        {{ item.name }}
+      </span>
     </div>
   </div>
 </template>
@@ -21,9 +23,34 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      scroll: false,
+    };
+  },
   computed: {
     ...mapState(['column']),
     ...mapGetters(['style']),
+  },
+  watch: {
+    column() {
+      const container = this.$refs.container;
+      const text = this.$refs.text;
+      if (container.clientWidth < text.scrollWidth) {
+        this.scroll = true;
+      } else {
+        this.scroll = false;
+      }
+    },
+  },
+  mounted() {
+    const container = this.$refs.container;
+    const text = this.$refs.text;
+    if (container.clientWidth < text.scrollWidth) {
+      this.scroll = true;
+    } else {
+      this.scroll = false;
+    }
   },
   methods: {
     ...mapActions('mainSchedule', ['selectMainSchedule']),
@@ -61,6 +88,8 @@ export default {
   }
   .body {
     padding: 12px 24px;
+    overflow: hidden;
+    position: relative;
   }
   .time {
     font-size: 24px;
@@ -74,6 +103,11 @@ export default {
     font-weight: 600;
     color: rgba(51, 51, 51, 1);
     line-height: 32px;
+    white-space: nowrap;
+    display: inline-block;
+    &.animate {
+      animation: scrollText 10s linear infinite;
+    }
   }
   &.column-1 {
     display: flex;
@@ -91,6 +125,17 @@ export default {
       height: 48px;
       line-height: 48px;
     }
+  }
+}
+</style>
+
+<style lang="less">
+@keyframes scrollText {
+  0% {
+    margin-left: 0;
+  }
+  100% {
+    margin-left: -100%;
   }
 }
 </style>
