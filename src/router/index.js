@@ -40,9 +40,9 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   console.log('开始路由跳转钩子')
   let isLogin = false;
-  const loginType = Vue.ls.get('loginType');
-  const token = Vue.ls.get('token');
-  const code = Vue.ls.get('code');
+  const loginType = Vue.lowdb.get('loginType').value();
+  const token = Vue.lowdb.get('token').value();
+  const code = Vue.lowdb.get('code').value();
   switch (loginType) {
     case 'internet':
       isLogin = !!token;

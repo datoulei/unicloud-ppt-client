@@ -35,11 +35,11 @@ export default {
       return this.$lodash.sortBy(this.$lodash.keys(this.group));
     },
     logo() {
-      const loginType = this.$ls.get('loginType');
+      const loginType = this.$lowdb.get('loginType').value();
       if (loginType === 'internet') {
         return this.screen.logo;
       } else if (this.screen.logo && this.screen.logo !== '/images/logo.png') {
-        const baseURL = this.$ls.get('baseURL');
+        const baseURL = this.$lowdb.get('baseURL').value();
         return `${baseURL}/${this.screen.logo}`;
       }
       return '/images/logo.png';

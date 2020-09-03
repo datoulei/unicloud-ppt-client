@@ -114,8 +114,8 @@ app.on("activate", () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
-  const isLogin = lowdb.get('isLogin').value()
-  console.log('is ready. isLogin=', isLogin);
+  const loginType = lowdb.get('loginType').value()
+  console.log('is ready. loginType=', loginType);
   globalShortcut.register('CommandOrControl+Shift+J', () => {
     log.debug('打开控制台')
     if (win) {
@@ -133,11 +133,91 @@ app.on("ready", async () => {
       console.error("Vue Devtools failed to install:", e.toString());
     }
   }
-  if (isLogin) {
+  if (loginType !== null) {
     createWindow();
   } else {
     createLoginWindow();
   }
+  session.fromPartition('preview').on('will-download', async (event, item) => {
+    console.log("item", item)
+    console.log('开始下载文件')
+    const fileName = item.getFilename();
+    const url = item.getURL();
+    const startTime = item.getStartTime();
+    const initialState = item.getState();
+    const downloadPath = app.getPath('userData');
+    const urlObj = URL.parse(url);
+
+    let fileNum = 0;
+    let savePath = path.join(downloadPath, 'temp', fileName);
+    console.log("savePath", savePath)
+
+    // savePath基础信息
+    const ext = path.extname(savePath);
+    const name = path.basename(savePath, ext);
+    const dir = path.dirname(savePath);
+
+    if (!fs.pathExistsSync(path.join(downloadPath, 'temp'))) {
+      fs.mkdirpSync(path.join(downloadPath, 'temp'))
+    }
+
+    // 文件名自增逻辑
+    while (fs.pathExistsSync(savePath)) {
+      fileNum += 1;
+      savePath = path.format({
+        dir,
+        ext,
+        name: `${name}(${fileNum})`,
+      });
+    }
+
+
+    // 设置下载目录，阻止系统dialog的出现
+    item.setSavePath(savePath);
+
+    // 下载任务完成
+    item.on('done', (e, state) => { // eslint-disable-line
+      console.log('下载完成')
+      shell.openPath(savePath)
+    });
+
+  });
+  session.fromPartition('cache').on('will-download', async (event, item) => {
+    console.log('开始缓存文件')
+    const fileName = item.getFilename();
+    const url = item.getURL();
+    const downloadPath = app.getPath('userData');
+    const urlObj = URL.parse(url);
+    const id = urlObj.query.split('=')[1]
+
+    const saveBasePath = path.join(downloadPath, 'downloads', id);
+    let savePath = path.join(saveBasePath, fileName);
+    console.log("savePath", savePath)
+
+    // 文件名自增逻辑
+    if (fs.pathExistsSync(savePath)) {
+      fs.removeSync(savePath);
+    } else if (!fs.existsSync(saveBasePath)) {
+      fs.mkdirpSync(saveBasePath);
+    }
+
+    // 设置下载目录，阻止系统dialog的出现
+    item.setSavePath(savePath);
+
+    // 下载任务完成
+    item.on('done', (e, state) => { // eslint-disable-line
+      // 写入缓存
+      try {
+        lowdb.set(`cache${id}`, savePath).write()
+        console.log('缓存成功')
+        win.webContents.send(`cache:${id}`, { result: true })
+      } catch (error) {
+        console.log('缓存失败', error);
+        win.webContents.send(`cache:${id}`, { result: false })
+      }
+    });
+
+  })
 });
 
 // Exit cleanly on request from parent process in development mode.
@@ -218,93 +298,19 @@ ipcMain.handle('channel', (event, { type, data }) => {
           session: session.fromPartition('preview')
         }
       });
-      modal.webContents.session.on('will-download', async (event, item) => {
-        console.log("item", item)
-        console.log('开始下载文件')
-        const fileName = item.getFilename();
-        const url = item.getURL();
-        const startTime = item.getStartTime();
-        const initialState = item.getState();
-        const downloadPath = app.getPath('userData');
-        const urlObj = URL.parse(url);
-
-        let fileNum = 0;
-        let savePath = path.join(downloadPath, 'temp', fileName);
-
-        // savePath基础信息
-        const ext = path.extname(savePath);
-        const name = path.basename(savePath, ext);
-        const dir = path.dirname(savePath);
-
-        // 文件名自增逻辑
-        while (fs.pathExistsSync(savePath)) {
-          fileNum += 1;
-          savePath = path.format({
-            dir,
-            ext,
-            name: `${name}(${fileNum})`,
-          });
-        }
-
-
-        // 设置下载目录，阻止系统dialog的出现
-        item.setSavePath(savePath);
-
-        // 下载任务完成
-        item.on('done', (e, state) => { // eslint-disable-line
-          shell.openPath(savePath)
-        });
-
-      })
+      console.log('下载地址：', data.url)
       modal.webContents.downloadURL(data.url)
       // }
       return { code: 1 }
     case 'cacheFile':
-      return new Promise((resolve, reject) => {
-        cacheModal = new BrowserWindow({
-          show: false,
-          webPreferences: {
-            session: session.fromPartition('cache')
-          }
-        });
-        cacheModal.webContents.session.on('will-download', async (event, item) => {
-          console.log('开始缓存文件')
-          const fileName = item.getFilename();
-          const url = item.getURL();
-          const downloadPath = app.getPath('userData');
-          const urlObj = URL.parse(url);
-          const id = urlObj.query.split('=')[1]
-
-          const saveBasePath = path.join(downloadPath, 'downloads', id);
-          let savePath = path.join(saveBasePath, fileName);
-          console.log("savePath", savePath)
-
-          // 文件名自增逻辑
-          if (fs.pathExistsSync(savePath)) {
-            fs.removeSync(savePath);
-          } else if (!fs.existsSync(saveBasePath)) {
-            fs.mkdirpSync(saveBasePath);
-          }
-
-          // 设置下载目录，阻止系统dialog的出现
-          item.setSavePath(savePath);
-
-          // 下载任务完成
-          item.on('done', (e, state) => { // eslint-disable-line
-            // 写入缓存
-            try {
-              lowdb.set(`cache${id}`, savePath).write()
-              console.log('缓存成功')
-              resolve()
-            } catch (error) {
-              console.log('缓存失败', error);
-              reject()
-            }
-          });
-
-        })
-        cacheModal.webContents.downloadURL(data.url)
-      })
+      cacheModal = new BrowserWindow({
+        show: false,
+        webPreferences: {
+          session: session.fromPartition('cache')
+        }
+      });
+      cacheModal.webContents.downloadURL(data.url)
+      return { code: 1 }
     case 'openCacheFile':
       shell.openPath(data.url)
       return { code: 1 }

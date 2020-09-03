@@ -7,9 +7,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    loginType: Vue.ls.get('loginType'),
+    loginType: Vue.lowdb.get('loginType').value(),
     column: 1,
-    screen: Vue.ls.get('screen'),
+    screen: Vue.lowdb.get('screen').value(),
   },
   getters: {
     style: state => state.screen.style

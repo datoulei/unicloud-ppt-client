@@ -69,10 +69,10 @@ export default {
         title: '退出登录确认',
         content: '是否确认退出登录？',
         onOk: () => {
-          this.$ls.remove('loginType');
-          this.$ls.remove('token');
-          this.$ls.remove('code');
-          this.$ls.remove('screen');
+          this.$lowdb.unset('loginType').write();
+          this.$lowdb.unset('token').write();
+          this.$lowdb.unset('code').write();
+          this.$lowdb.unset('screen').write();
           this.$lowdb.unset('isLogin').write();
           this.$message.success('退出登录成功！');
           this.$ipcRenderer.invoke('channel', { type: 'logout' });

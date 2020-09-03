@@ -61,6 +61,7 @@ export default {
   data() {
     return {
       cacheFile: null,
+      hideLoading: null,
     };
   },
   created() {
@@ -86,11 +87,11 @@ export default {
       return true;
     },
     avatar() {
-      const loginType = this.$ls.get('loginType');
+      const loginType = this.$lowdb.get('loginType').value();
       if (loginType === 'internet') {
         return this.item.avatar;
       } else {
-        const baseURL = this.$ls.get('baseURL');
+        const baseURL = this.$lowdb.get('baseURL').value();
         return `${baseURL}/${this.item.avatar}`;
       }
     },
@@ -104,7 +105,12 @@ export default {
           data: { url: this.cacheFile },
         });
       } else if (this.item.ppt) {
-        const url = this.item.ppt + '?id=' + this.item.id;
+        let url = this.item.ppt + '?id=' + this.item.id;
+        const loginType = this.$lowdb.get('loginType').value();
+        if (loginType === 'local') {
+          const baseURL = this.$lowdb.get('baseURL').value();
+          url = `${baseURL}/${url}`;
+        }
         this.$ipcRenderer.invoke('channel', {
           type: 'preview',
           data: { url },
@@ -113,22 +119,30 @@ export default {
     },
     async handleCache() {
       if (this.item.ppt) {
-        const url = this.item.ppt + '?id=' + this.item.id;
-        const hide = this.$message.loading('正在缓存，请稍后...', 0);
-        try {
-          await this.$ipcRenderer.invoke('channel', {
-            type: 'cacheFile',
-            data: { url },
-          });
-          console.log('缓存成功');
-          hide();
-          this.$message.success('缓存成功！');
-          this.loadCache();
-        } catch (error) {
-          console.log('缓存失败');
-          hide();
-          this.$message.error('缓存失败！');
+        let url = this.item.ppt + '?id=' + this.item.id;
+        const loginType = this.$lowdb.get('loginType').value();
+        if (loginType === 'local') {
+          const baseURL = this.$lowdb.get('baseURL').value();
+          url = `${baseURL}/${url}`;
         }
+        this.hideLoading = this.$message.loading('正在缓存，请稍后...', 0);
+        this.$ipcRenderer.invoke('channel', {
+          type: 'cacheFile',
+          data: { url },
+        });
+        // 监听
+        this.$ipcRenderer.once(`cache:${this.item.id}`, (e, { result }) => {
+          if (this.hideLoading) {
+            this.hideLoading();
+            this.hideLoading = null;
+          }
+          if (result) {
+            this.$message.success('缓存成功！');
+          } else {
+            this.$message.error('缓存失败！');
+          }
+          this.loadCache();
+        });
       }
     },
     async loadCache() {
