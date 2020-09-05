@@ -133,7 +133,7 @@ app.on("ready", async () => {
       console.error("Vue Devtools failed to install:", e.toString());
     }
   }
-  if (loginType !== null) {
+  if (loginType) {
     createWindow();
   } else {
     createLoginWindow();
@@ -146,39 +146,32 @@ app.on("ready", async () => {
     const startTime = item.getStartTime();
     const initialState = item.getState();
     const downloadPath = app.getPath('userData');
-    const urlObj = URL.parse(url);
 
-    let fileNum = 0;
-    let savePath = path.join(downloadPath, 'temp', fileName);
+    const saveBasePath = path.join(downloadPath, 'temp');
+    // savePath基础信息
+    const ext = path.extname(fileName);
+    const name = path.basename(fileName, ext);
+    let savePath = path.format({
+      saveBasePath,
+      ext,
+      name: `${name}-${Date.now()}`,
+    });
     console.log("savePath", savePath)
 
-    // savePath基础信息
-    const ext = path.extname(savePath);
-    const name = path.basename(savePath, ext);
-    const dir = path.dirname(savePath);
 
-    if (!fs.pathExistsSync(path.join(downloadPath, 'temp'))) {
-      fs.mkdirpSync(path.join(downloadPath, 'temp'))
+    if (!fs.existsSync(saveBasePath)) {
+      fs.mkdirpSync(saveBasePath);
     }
-
-    // 文件名自增逻辑
-    while (fs.pathExistsSync(savePath)) {
-      fileNum += 1;
-      savePath = path.format({
-        dir,
-        ext,
-        name: `${name}(${fileNum})`,
-      });
-    }
-
 
     // 设置下载目录，阻止系统dialog的出现
     item.setSavePath(savePath);
 
     // 下载任务完成
     item.on('done', (e, state) => { // eslint-disable-line
-      console.log('下载完成')
-      shell.openPath(savePath)
+      if (state === 'completed') {
+        console.log('下载完成')
+        shell.openPath(savePath)
+      }
     });
 
   });
@@ -192,27 +185,40 @@ app.on("ready", async () => {
 
     const saveBasePath = path.join(downloadPath, 'downloads', id);
     let savePath = path.join(saveBasePath, fileName);
-    console.log("savePath", savePath)
+
+    if (!fs.existsSync(saveBasePath)) {
+      fs.mkdirpSync(saveBasePath);
+    }
 
     // 文件名自增逻辑
-    if (fs.pathExistsSync(savePath)) {
+    if (fs.existsSync(savePath)) {
       fs.removeSync(savePath);
-    } else if (!fs.existsSync(saveBasePath)) {
-      fs.mkdirpSync(saveBasePath);
     }
 
     // 设置下载目录，阻止系统dialog的出现
     item.setSavePath(savePath);
 
+    item.on('updated', (event, state) => {
+      if (state === 'interrupted') {
+        console.log('Download is interrupted but can be resumed')
+      } else if (state === 'progressing') {
+        if (item.isPaused()) {
+          console.log('Download is paused')
+        } else {
+          console.log(`Received bytes: ${item.getReceivedBytes()}`)
+        }
+      }
+    })
+
     // 下载任务完成
     item.on('done', (e, state) => { // eslint-disable-line
       // 写入缓存
-      try {
+      if (state === 'completed') {
         lowdb.set(`cache${id}`, savePath).write()
         console.log('缓存成功')
         win.webContents.send(`cache:${id}`, { result: true })
-      } catch (error) {
-        console.log('缓存失败', error);
+      } else {
+        console.log('缓存失败');
         win.webContents.send(`cache:${id}`, { result: false })
       }
     });
@@ -283,24 +289,20 @@ ipcMain.handle('channel', (event, { type, data }) => {
       }
       return { code: 1 }
     case 'preview':
-      // if (data.url.includes('.pdf')) {
-      //   modal = new BrowserWindow({
-      //     fullscreen: true,
-      //     resizable: false,
-      //     alwaysOnTop: true,
-      //     parent: win,
-      //   });
-      //   modal.loadURL(data.url)
-      // } else if (data.url.includes('.ppt') || data.url.includes('.pptx') || data.url.includes('.pps') || data.url.includes('.ppsx')) {
-      modal = new BrowserWindow({
-        show: false,
-        webPreferences: {
-          session: session.fromPartition('preview')
-        }
-      });
-      console.log('下载地址：', data.url)
-      modal.webContents.downloadURL(data.url)
-      // }
+      if (data.url.includes('.pdf')) {
+        (new BrowserWindow({
+          fullscreen: true,
+        })).loadURL(data.url)
+      } else if (data.url.includes('.ppt') || data.url.includes('.pptx') || data.url.includes('.pps') || data.url.includes('.ppsx')) {
+        modal = new BrowserWindow({
+          show: false,
+          webPreferences: {
+            session: session.fromPartition('preview')
+          }
+        });
+        console.log('下载地址：', data.url)
+        modal.webContents.downloadURL(data.url)
+      }
       return { code: 1 }
     case 'cacheFile':
       cacheModal = new BrowserWindow({

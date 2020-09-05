@@ -73,7 +73,6 @@ export default {
           this.$lowdb.unset('token').write();
           this.$lowdb.unset('code').write();
           this.$lowdb.unset('screen').write();
-          this.$lowdb.unset('isLogin').write();
           this.$message.success('退出登录成功！');
           this.$ipcRenderer.invoke('channel', { type: 'logout' });
         },

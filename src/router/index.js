@@ -55,14 +55,12 @@ router.beforeEach((to, from, next) => {
   }
   if (!isLogin) {
     // 未登录
-    Vue.lowdb.unset('isLogin').write()
     if (to.path !== '/login') {
       next('/login');
     } else {
       next();
     }
   } else {
-    Vue.lowdb.set('isLogin', true).write()
     // 已登录
     if (to.path === '/login') {
       next('/')
