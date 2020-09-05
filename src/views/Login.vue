@@ -196,7 +196,7 @@ export default {
     border-radius: 6px;
     padding: 40px 25px;
     .title {
-      width: 48px;
+      // width: 48px;
       height: 32px;
       font-size: 24px;
       font-family: PingFangTC-Medium, PingFangTC;
