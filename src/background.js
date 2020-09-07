@@ -7,13 +7,13 @@ import * as URL from 'url';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import lowdb from './lowdb'
-import { autoUpdater } from 'electron-updater'
+// import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
 log.transports.console.level = false;
 log.transports.console.level = 'silly'
 const isDevelopment = process.env.NODE_ENV !== "production";
-autoUpdater.logger = log
-autoUpdater.checkForUpdatesAndNotify()
+// autoUpdater.logger = log
+// autoUpdater.checkForUpdatesAndNotify()
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -149,8 +149,8 @@ app.on("ready", async () => {
 
     const saveBasePath = path.join(downloadPath, 'temp');
     // savePath基础信息
-    const ext = path.extname(fileName);
-    const name = path.basename(fileName, ext);
+    const ext = path.extname(url);
+    const name = path.basename(url, ext);
     let savePath = path.format({
       saveBasePath,
       ext,
@@ -177,13 +177,14 @@ app.on("ready", async () => {
   });
   session.fromPartition('cache').on('will-download', async (event, item) => {
     log.info('开始缓存文件')
+    const loginType = lowdb.get('loginType').value()
     const fileName = item.getFilename();
     const url = item.getURL();
     const downloadPath = app.getPath('userData');
     const urlObj = URL.parse(url);
     const id = urlObj.query.split('=')[1]
 
-    const saveBasePath = path.join(downloadPath, 'downloads', id);
+    const saveBasePath = path.join(downloadPath, 'downloads', id, loginType);
     let savePath = path.join(saveBasePath, fileName);
 
     if (!fs.existsSync(saveBasePath)) {
@@ -191,10 +192,10 @@ app.on("ready", async () => {
     }
 
     // 文件名自增逻辑
-    if (fs.existsSync(savePath)) {
-      fs.removeSync(savePath);
-    }
-
+    // if (fs.existsSync(savePath)) {
+    //   fs.removeSync(savePath);
+    // }
+    log.info('当前文件缓存地址：', savePath);
     // 设置下载目录，阻止系统dialog的出现
     item.setSavePath(savePath);
 
@@ -214,7 +215,7 @@ app.on("ready", async () => {
     item.on('done', (e, state) => { // eslint-disable-line
       // 写入缓存
       if (state === 'completed') {
-        lowdb.set(`cache${id}`, savePath).write()
+        lowdb.set(`cache:${loginType}:${id}`, savePath).write()
         log.info('缓存成功')
         win.webContents.send(`cache:${id}`, { result: true })
       } else {

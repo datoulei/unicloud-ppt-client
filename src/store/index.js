@@ -8,6 +8,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     loginType: Vue.lowdb.get('loginType').value(),
+    baseURL: Vue.lowdb.get('baseURL').value(),
     column: 1,
     screen: Vue.lowdb.get('screen').value(),
   },

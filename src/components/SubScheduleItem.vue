@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 export default {
   props: {
     item: {
@@ -62,6 +62,7 @@ export default {
     return {
       cacheFile: null,
       hideLoading: null,
+      showDownloadButton: false,
     };
   },
   created() {
@@ -73,26 +74,16 @@ export default {
     },
   },
   computed: {
+    ...mapState(['loginType', 'baseURL']),
     ...mapGetters(['style']),
     duration() {
       return `${this.item.startTime}-${this.item.endTime}`;
     },
-    showDownloadButton() {
-      if (!this.item.ppt) {
-        return false;
-      } else if (this.cacheFile) {
-        const pptFile = this.item.ppt.split('/').pop();
-        return this.cacheFile.split('/').pop() !== pptFile;
-      }
-      return true;
-    },
     avatar() {
-      const loginType = this.$lowdb.get('loginType').value();
-      if (loginType === 'internet') {
+      if (this.loginType === 'internet') {
         return this.item.avatar;
       } else {
-        const baseURL = this.$lowdb.get('baseURL').value();
-        return `${baseURL}/${this.item.avatar}`;
+        return `${this.baseURL}/${this.item.avatar}`;
       }
     },
   },
@@ -106,10 +97,8 @@ export default {
         });
       } else if (this.item.ppt) {
         let url = this.item.ppt + '?id=' + this.item.id;
-        const loginType = this.$lowdb.get('loginType').value();
-        if (loginType === 'local') {
-          const baseURL = this.$lowdb.get('baseURL').value();
-          url = `${baseURL}/${url}`;
+        if (this.loginType === 'local') {
+          url = `${this.baseURL}/${url}`;
         }
         this.$ipcRenderer.invoke('channel', {
           type: 'preview',
@@ -120,10 +109,8 @@ export default {
     async handleCache() {
       if (this.item.ppt) {
         let url = this.item.ppt + '?id=' + this.item.id;
-        const loginType = this.$lowdb.get('loginType').value();
-        if (loginType === 'local') {
-          const baseURL = this.$lowdb.get('baseURL').value();
-          url = `${baseURL}/${url}`;
+        if (this.loginType === 'local') {
+          url = `${this.baseURL}/${url}`;
         }
         this.hideLoading = this.$message.loading('正在缓存，请稍后...', 0);
         this.$ipcRenderer.invoke('channel', {
@@ -146,10 +133,10 @@ export default {
       }
     },
     async loadCache() {
-      this.$lowdb.read();
-      const key = `cache${this.item.id}`;
+      const key = `cache:${this.loginType}:${this.item.id}`;
       const url = this.$lowdb.get(key).value();
       this.cacheFile = url;
+      this.showDownloadButton = !url;
     },
   },
 };
