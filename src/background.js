@@ -211,10 +211,11 @@ app.on("ready", async () => {
     })
 
     // 下载任务完成
-    item.on('done', (e, state) => { // eslint-disable-line
+    item.on('done', async (e, state) => { // eslint-disable-line
+      const loginType = lowdb.get('loginType').value()
       // 写入缓存
       if (state === 'completed') {
-        lowdb.set(`cache:${loginType}:${id}`, savePath).write()
+        await lowdb.set(`cache:${loginType}:${id}`, savePath).write()
         console.log('缓存成功')
         win.webContents.send(`cache:${id}`, { result: true })
       } else {

@@ -87,6 +87,13 @@ export default {
       }
     },
   },
+  mounted() {
+    // 开启监听
+    this.$ipcRenderer.on(`cache:${this.item.id}`, this.handleFinishCache);
+  },
+  beforeDestroy() {
+    this.$ipcRenderer.off(`cache:${this.item.id}`, this.handleFinishCache);
+  },
   methods: {
     async handlePlay() {
       if (this.cacheFile) {
@@ -117,20 +124,20 @@ export default {
           type: 'cacheFile',
           data: { url },
         });
-        // 监听
-        this.$ipcRenderer.once(`cache:${this.item.id}`, (e, { result }) => {
-          if (this.hideLoading) {
-            this.hideLoading();
-            this.hideLoading = null;
-          }
-          if (result) {
-            this.$message.success('缓存成功！');
-          } else {
-            this.$message.error('缓存失败！');
-          }
-          this.loadCache();
-        });
       }
+    },
+    async handleFinishCache(e, { result }) {
+      if (this.hideLoading) {
+        this.hideLoading();
+        this.hideLoading = null;
+      }
+      if (result) {
+        this.$message.success('缓存成功！');
+      } else {
+        this.$message.error('缓存失败！');
+      }
+      await this.$lowdb.read();
+      this.loadCache();
     },
     async loadCache() {
       const key = `cache:${this.loginType}:${this.item.id}`;
