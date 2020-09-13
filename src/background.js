@@ -1,6 +1,6 @@
 "use strict";
 
-import { app, session, shell, protocol, BrowserWindow, ipcMain, globalShortcut } from "electron";
+import { app, screen, session, shell, protocol, BrowserWindow, ipcMain, globalShortcut, Menu } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import * as URL from 'url';
@@ -21,6 +21,7 @@ const isDevelopment = process.env.NODE_ENV !== "production";
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
 let loginWin;
+let timerWin;
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -92,6 +93,53 @@ function createLoginWindow() {
   });
 }
 
+function createTimerWindow() {
+  console.log('open timer window');
+  // const displays = screen.getAllDisplays()
+  // console.log("createTimerWindow -> displays", displays)
+  // let display = displays[1];
+  let display = screen.getPrimaryDisplay();
+  let width = display.bounds.width;
+  timerWin = new BrowserWindow({
+    frame: false,
+    width: 110,
+    height: 48,
+    x: width - 110 - 24,
+    y: 48,
+    transparent: true,
+    hasShadow: false,
+    resizable: false,
+    alwaysOnTop: true,
+    webPreferences: {
+      // Use pluginOptions.nodeIntegration, leave this alone
+      // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
+      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+      additionalArguments: ['timer-window'],
+      enableRemoteModule: true
+    }
+  })
+
+  if (process.env.WEBPACK_DEV_SERVER_URL) {
+    console.log("createTimerWindow -> process.env.WEBPACK_DEV_SERVER_URL", process.env.WEBPACK_DEV_SERVER_URL)
+    // Load the url of the dev server if in development mode
+    timerWin.loadFile('../public/timer.html', {
+      query: { time: '30' }
+    });
+    // timerWin.loadURL(process.env.WEBPACK_DEV_SERVER_URL + '/timer');
+    // if (!process.env.IS_TEST) loginWin.webContents.openDevTools();
+  } else {
+    createProtocol("app");
+    // Load the index.html when not in development
+    // timerWin.loadURL("app://./index.html");
+    timerWin.loadFile('./public/timer.html');
+  }
+  // timerWin.webContents.openDevTools();
+
+  timerWin.on("closed", () => {
+    timerWin = null;
+  });
+}
+
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
   // On macOS it is common for applications and their menu bar
@@ -115,6 +163,7 @@ app.on("activate", () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
+  Menu.setApplicationMenu(new Menu())
   const loginType = lowdb.get('loginType').value()
   console.log('is ready. loginType=', loginType);
   globalShortcut.register('CommandOrControl+Shift+J', () => {
@@ -124,6 +173,9 @@ app.on("ready", async () => {
     }
     if (loginWin) {
       loginWin.webContents.openDevTools()
+    }
+    if (timerWin) {
+      timerWin.webContents.openDevTools()
     }
   })
   if (isDevelopment && !process.env.IS_TEST) {
@@ -136,6 +188,7 @@ app.on("ready", async () => {
   }
   if (loginType) {
     createWindow();
+    // createTimerWindow()
   } else {
     createLoginWindow();
   }
@@ -293,6 +346,7 @@ ipcMain.handle('channel', (event, { type, data }) => {
       if (data.url.includes('.pdf')) {
         console.log('预览pdf文件')
         let _modal = new BrowserWindow({
+          frame: true,
           fullscreen: true,
         })
         _modal.loadURL(data.url)
@@ -318,7 +372,16 @@ ipcMain.handle('channel', (event, { type, data }) => {
       cacheModal.webContents.downloadURL(data.url)
       return { code: 1 }
     case 'openCacheFile':
-      shell.openPath(data.url)
+      if (data.url.includes('.pdf')) {
+        console.log('预览pdf文件')
+        let _modal = new BrowserWindow({
+          frame: true,
+          fullscreen: true,
+        })
+        _modal.loadFile(data.url)
+      } else {
+        shell.openPath(data.url)
+      }
       return { code: 1 }
     default:
       console.log('未知操作：', type)
