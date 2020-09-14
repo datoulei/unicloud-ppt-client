@@ -62,7 +62,7 @@ function createWindow() {
 
 function createLoginWindow() {
   // Create the browser window.
-  console.log('open login window');
+  log.info('open login window');
   loginWin = new BrowserWindow({
     frame: false,
     width: 868,
@@ -94,9 +94,9 @@ function createLoginWindow() {
 }
 
 function createTimerWindow() {
-  console.log('open timer window');
+  log.info('open timer window');
   // const displays = screen.getAllDisplays()
-  // console.log("createTimerWindow -> displays", displays)
+  // log.info("createTimerWindow -> displays", displays)
   // let display = displays[1];
   let display = screen.getPrimaryDisplay();
   let width = display.bounds.width;
@@ -120,7 +120,7 @@ function createTimerWindow() {
   })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
-    console.log("createTimerWindow -> process.env.WEBPACK_DEV_SERVER_URL", process.env.WEBPACK_DEV_SERVER_URL)
+    log.info("createTimerWindow -> process.env.WEBPACK_DEV_SERVER_URL", process.env.WEBPACK_DEV_SERVER_URL)
     // Load the url of the dev server if in development mode
     timerWin.loadFile('../public/timer.html', {
       query: { time: '30' }
@@ -165,9 +165,9 @@ app.on("activate", () => {
 app.on("ready", async () => {
   Menu.setApplicationMenu(new Menu())
   const loginType = lowdb.get('loginType').value()
-  console.log('is ready. loginType=', loginType);
+  log.info('is ready. loginType=', loginType);
   globalShortcut.register('CommandOrControl+Shift+J', () => {
-    console.log('打开控制台')
+    log.info('打开控制台')
     if (win) {
       win.webContents.openDevTools()
     }
@@ -193,7 +193,7 @@ app.on("ready", async () => {
     createLoginWindow();
   }
   session.fromPartition('preview').on('will-download', async (event, item) => {
-    console.log('开始下载文件')
+    log.info('开始下载预览文件')
     const fileName = item.getFilename();
     const url = item.getURL();
     const startTime = item.getStartTime();
@@ -209,7 +209,6 @@ app.on("ready", async () => {
       ext,
       name: `${md5(name + Date.now())}`,
     });
-    console.log("savePath", savePath)
 
     if (!fs.existsSync(saveBasePath)) {
       fs.mkdirpSync(saveBasePath);
@@ -217,18 +216,19 @@ app.on("ready", async () => {
 
     // 设置下载目录，阻止系统dialog的出现
     item.setSavePath(savePath);
+    log.info("savePath=", savePath)
 
     // 下载任务完成
     item.on('done', (e, state) => { // eslint-disable-line
       if (state === 'completed') {
-        console.log('下载完成, 准备打开文件')
+        log.info('下载完成, 准备打开文件')
         shell.openPath(savePath)
       }
     });
 
   });
   session.fromPartition('cache').on('will-download', async (event, item) => {
-    console.log('开始缓存文件')
+    log.info('开始缓存文件')
     const loginType = lowdb.get('loginType').value()
     const fileName = item.getFilename();
     const url = item.getURL();
@@ -247,18 +247,18 @@ app.on("ready", async () => {
     // if (fs.existsSync(savePath)) {
     //   fs.removeSync(savePath);
     // }
-    console.log('当前文件缓存地址：', savePath);
+    log.info('当前文件缓存地址：', savePath);
     // 设置下载目录，阻止系统dialog的出现
     item.setSavePath(savePath);
 
     item.on('updated', (event, state) => {
       if (state === 'interrupted') {
-        console.log('Download is interrupted but can be resumed')
+        log.info('Download is interrupted but can be resumed')
       } else if (state === 'progressing') {
         if (item.isPaused()) {
-          console.log('Download is paused')
+          log.info('Download is paused')
         } else {
-          console.log(`Received bytes: ${item.getReceivedBytes()}`)
+          log.info(`Received bytes: ${item.getReceivedBytes()}`)
         }
       }
     })
@@ -269,10 +269,10 @@ app.on("ready", async () => {
       // 写入缓存
       if (state === 'completed') {
         await lowdb.set(`cache:${loginType}:${id}`, savePath).write()
-        console.log('缓存成功')
+        log.info('缓存成功')
         win.webContents.send(`cache:${id}`, { result: true })
       } else {
-        console.log('缓存失败');
+        log.info('缓存失败');
         win.webContents.send(`cache:${id}`, { result: false })
       }
     });
@@ -299,7 +299,7 @@ if (isDevelopment) {
 ipcMain.handle('channel', (event, { type, data }) => {
   let modal;
   let cacheModal;
-  console.log("主进程监听，type：%s， data: %o", type, data)
+  log.info("主进程监听，type：%s， data: %o", type, data)
   switch (type) {
     // case 'init':
     //   if (data.isLogin) {
@@ -344,21 +344,20 @@ ipcMain.handle('channel', (event, { type, data }) => {
       return { code: 1 }
     case 'preview':
       if (data.url.includes('.pdf')) {
-        console.log('预览pdf文件')
+        log.info('预览pdf文件')
         let _modal = new BrowserWindow({
           frame: true,
           fullscreen: true,
         })
         _modal.loadURL(data.url)
       } else {
-        console.log('预览其他文件')
+        log.info('预览其他文件')
         modal = new BrowserWindow({
           show: false,
           webPreferences: {
             session: session.fromPartition('preview')
           }
         });
-        console.log('下载地址：', data.url)
         modal.webContents.downloadURL(data.url)
       }
       return { code: 1 }
@@ -373,7 +372,7 @@ ipcMain.handle('channel', (event, { type, data }) => {
       return { code: 1 }
     case 'openCacheFile':
       if (data.url.includes('.pdf')) {
-        console.log('预览pdf文件')
+        log.info('预览pdf文件')
         let _modal = new BrowserWindow({
           frame: true,
           fullscreen: true,
@@ -384,7 +383,7 @@ ipcMain.handle('channel', (event, { type, data }) => {
       }
       return { code: 1 }
     default:
-      console.log('未知操作：', type)
+      log.info('未知操作：', type)
       break;
   }
 })
