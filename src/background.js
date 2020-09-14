@@ -202,7 +202,10 @@ app.on("ready", async () => {
 
     const saveBasePath = path.join(downloadPath, 'temp');
     // savePath基础信息
-    const ext = path.extname(fileName);
+    const oldExt = path.extname(fileName);
+    log.info("oldExt", oldExt)
+    const ext = fileName.split('.').pop();
+    log.info("ext", ext)
     const name = path.basename(fileName, ext);
     const savePath = path.format({
       dir: saveBasePath,

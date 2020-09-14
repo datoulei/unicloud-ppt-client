@@ -103,7 +103,7 @@ export default {
           data: { url: this.cacheFile },
         });
       } else if (this.item.ppt) {
-        let url = this.item.ppt + '?id=' + this.item.id;
+        let url = this.item.ppt;
         if (this.loginType === 'local') {
           url = `${this.baseURL}/${url}`;
         }
