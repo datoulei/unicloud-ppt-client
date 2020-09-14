@@ -195,23 +195,26 @@ app.on("ready", async () => {
   session.fromPartition('preview').on('will-download', async (event, item) => {
     log.info('开始下载预览文件')
     const fileName = item.getFilename();
-    const url = item.getURL();
-    const startTime = item.getStartTime();
-    const initialState = item.getState();
+    // const url = item.getURL();
+    // const startTime = item.getStartTime();
+    // const initialState = item.getState();
     const downloadPath = app.getPath('userData');
 
     const saveBasePath = path.join(downloadPath, 'temp');
+    log.info("saveBasePath", saveBasePath)
     // savePath基础信息
-    const oldExt = path.extname(fileName);
-    log.info("oldExt", oldExt)
-    const ext = fileName.split('.').pop();
-    log.info("ext", ext)
+    const ext = path.extname(fileName);
+    log.info("ext=", ext)
     const name = path.basename(fileName, ext);
+    log.info("name=", name)
+    const md5Name = `${md5(name + Date.now())}`
+    log.info("md5Name=", md5Name)
     const savePath = path.format({
       dir: saveBasePath,
       ext,
-      name: `${md5(name + Date.now())}`,
+      name: md5Name,
     });
+    log.info("savePath=", savePath)
 
     if (!fs.existsSync(saveBasePath)) {
       fs.mkdirpSync(saveBasePath);
@@ -219,12 +222,11 @@ app.on("ready", async () => {
 
     // 设置下载目录，阻止系统dialog的出现
     item.setSavePath(savePath);
-    log.info("savePath=", savePath)
 
     // 下载任务完成
     item.on('done', (e, state) => { // eslint-disable-line
       if (state === 'completed') {
-        log.info('下载完成, 准备打开文件')
+        log.info('下载完成, 准备打开文件=', savePath)
         shell.openPath(savePath)
       }
     });
