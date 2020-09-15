@@ -223,39 +223,6 @@ app.on("ready", async () => {
     // 设置下载目录，阻止系统dialog的出现
     item.setSavePath(savePath);
 
-    // 下载任务完成
-    item.on('done', (e, state) => { // eslint-disable-line
-      if (state === 'completed') {
-        log.info('下载完成, 准备打开文件=', savePath)
-        shell.openPath(savePath)
-      }
-    });
-
-  });
-  session.fromPartition('cache').on('will-download', async (event, item) => {
-    log.info('开始缓存文件')
-    const loginType = lowdb.get('loginType').value()
-    const fileName = item.getFilename();
-    const url = item.getURL();
-    const downloadPath = app.getPath('userData');
-    const urlObj = URL.parse(url);
-    const id = urlObj.query.split('=')[1]
-
-    const saveBasePath = path.join(downloadPath, 'downloads', id, loginType);
-    let savePath = path.join(saveBasePath, fileName);
-
-    if (!fs.existsSync(saveBasePath)) {
-      fs.mkdirpSync(saveBasePath);
-    }
-
-    // 文件名自增逻辑
-    // if (fs.existsSync(savePath)) {
-    //   fs.removeSync(savePath);
-    // }
-    log.info('当前文件缓存地址：', savePath);
-    // 设置下载目录，阻止系统dialog的出现
-    item.setSavePath(savePath);
-
     item.on('updated', (event, state) => {
       if (state === 'interrupted') {
         log.info('Download is interrupted but can be resumed')
@@ -268,20 +235,69 @@ app.on("ready", async () => {
       }
     })
 
+
     // 下载任务完成
-    item.on('done', async (e, state) => { // eslint-disable-line
-      const loginType = lowdb.get('loginType').value()
-      // 写入缓存
+    item.on('done', (e, state) => { // eslint-disable-line
       if (state === 'completed') {
-        await lowdb.set(`cache:${loginType}:${id}`, savePath).write()
-        log.info('缓存成功')
-        win.webContents.send(`cache:${id}`, { result: true })
-      } else {
-        log.info('缓存失败');
-        win.webContents.send(`cache:${id}`, { result: false })
+        log.info('下载完成, 准备打开文件=', savePath)
+        shell.openPath(savePath)
       }
     });
 
+  });
+  session.fromPartition('cache').on('will-download', async (event, item) => {
+    try {
+      log.info('开始缓存文件')
+      const loginType = lowdb.get('loginType').value()
+      const fileName = item.getFilename();
+      const url = item.getURL();
+      const downloadPath = app.getPath('userData');
+      const urlObj = URL.parse(url);
+      const id = urlObj.query.split('=')[1]
+
+      const saveBasePath = path.join(downloadPath, 'downloads', id, loginType);
+      let savePath = path.join(saveBasePath, fileName);
+
+      if (!fs.existsSync(saveBasePath)) {
+        fs.mkdirpSync(saveBasePath);
+      }
+
+      // 文件名自增逻辑
+      // if (fs.existsSync(savePath)) {
+      //   fs.removeSync(savePath);
+      // }
+      log.info('当前文件缓存地址：', savePath);
+      // 设置下载目录，阻止系统dialog的出现
+      item.setSavePath(savePath);
+
+      item.on('updated', (event, state) => {
+        if (state === 'interrupted') {
+          log.info('Download is interrupted but can be resumed')
+        } else if (state === 'progressing') {
+          if (item.isPaused()) {
+            log.info('Download is paused')
+          } else {
+            log.info(`Received bytes: ${item.getReceivedBytes()}`)
+          }
+        }
+      })
+
+      // 下载任务完成
+      item.on('done', async (e, state) => { // eslint-disable-line
+        const loginType = lowdb.get('loginType').value()
+        // 写入缓存
+        if (state === 'completed') {
+          await lowdb.set(`cache:${loginType}:${id}`, savePath).write()
+          log.info('缓存成功')
+          win.webContents.send(`cache:${id}`, { result: true })
+        } else {
+          log.info('缓存失败', e);
+          win.webContents.send(`cache:${id}`, { result: false })
+        }
+      });
+    } catch (error) {
+      log.info('缓存文件失败：', error)
+    }
   })
 });
 
@@ -350,11 +366,7 @@ ipcMain.handle('channel', (event, { type, data }) => {
     case 'preview':
       if (data.url.includes('.pdf')) {
         log.info('预览pdf文件')
-        let _modal = new BrowserWindow({
-          frame: true,
-          fullscreen: true,
-        })
-        _modal.loadURL(data.url)
+        shell.openPath(data.url)
       } else {
         log.info('预览其他文件')
         modal = new BrowserWindow({
@@ -376,16 +388,12 @@ ipcMain.handle('channel', (event, { type, data }) => {
       cacheModal.webContents.downloadURL(data.url)
       return { code: 1 }
     case 'openCacheFile':
-      if (data.url.includes('.pdf')) {
-        log.info('预览pdf文件')
-        let _modal = new BrowserWindow({
-          frame: true,
-          fullscreen: true,
-        })
-        _modal.loadFile(data.url)
-      } else {
-        shell.openPath(data.url)
-      }
+      // if (data.url.includes('.pdf')) {
+      //   log.info('预览pdf文件')
+      //   shell.openPath(data.url)
+      // } else {
+      // }
+      shell.openPath(data.url)
       return { code: 1 }
     default:
       log.info('未知操作：', type)

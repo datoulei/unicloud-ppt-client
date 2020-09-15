@@ -61,8 +61,8 @@ export default {
   data() {
     return {
       cacheFile: null,
+      cacheTimestamp: null,
       hideLoading: null,
-      showDownloadButton: false,
     };
   },
   created() {
@@ -84,6 +84,13 @@ export default {
         return this.item.avatar;
       } else {
         return `${this.baseURL}/${this.item.avatar}`;
+      }
+    },
+    showDownloadButton() {
+      try {
+        return this.cacheTimestamp !== this.item.timestamp;
+      } catch (error) {
+        return true;
       }
     },
   },
@@ -132,6 +139,10 @@ export default {
         this.hideLoading = null;
       }
       if (result) {
+        // 缓存当前文件时间
+        const key = `cache-timestamp:${this.loginType}:${this.item.id}`;
+        this.$lowdb.set(key, this.item.timestamp);
+        this.cacheTimestamp = this.item.timestamp;
         this.$message.success('缓存成功！');
       } else {
         this.$message.error('缓存失败！');
@@ -141,9 +152,9 @@ export default {
     },
     async loadCache() {
       const key = `cache:${this.loginType}:${this.item.id}`;
-      const url = this.$lowdb.get(key).value();
-      this.cacheFile = url;
-      this.showDownloadButton = !url;
+      this.cacheFile = this.$lowdb.get(key).value();
+      const timestampKey = `cache-timestamp:${this.loginType}:${this.item.id}`;
+      this.cacheTimestamp = this.$lowdb.get(timestampKey).value;
     },
   },
 };
