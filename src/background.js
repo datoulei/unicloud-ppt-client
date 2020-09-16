@@ -249,11 +249,12 @@ app.on("ready", async () => {
     try {
       log.info('开始缓存文件')
       const loginType = lowdb.get('loginType').value()
+      log.info("loginType", loginType)
       const fileName = item.getFilename();
       const url = item.getURL();
       const downloadPath = app.getPath('userData');
-      const urlObj = URL.parse(url);
-      const id = urlObj.query.split('=')[1]
+      const id = URL.parse(url, true).query.id;
+      log.info("id", id)
 
       const saveBasePath = path.join(downloadPath, 'downloads', id, loginType);
       let savePath = path.join(saveBasePath, fileName);
