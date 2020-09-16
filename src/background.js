@@ -248,6 +248,7 @@ app.on("ready", async () => {
   session.fromPartition('cache').on('will-download', async (event, item) => {
     try {
       log.info('开始缓存文件')
+      await lowdb.read()
       const loginType = lowdb.get('loginType').value()
       log.info("loginType", loginType)
       const fileName = item.getFilename();
