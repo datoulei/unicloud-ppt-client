@@ -288,12 +288,12 @@ app.on("ready", async () => {
         const loginType = lowdb.get('loginType').value()
         // 写入缓存
         if (state === 'completed') {
-          await lowdb.set(`cache:${loginType}:${id}`, savePath).write()
+          // await lowdb.update(`cache:${loginType}:${id}`, savePath).write()
           log.info('缓存成功')
-          win.webContents.send(`cache:${id}`, { result: true })
+          win.webContents.send(`cache:${id}`, { result: true, savePath })
         } else {
           log.info('缓存失败', e);
-          win.webContents.send(`cache:${id}`, { result: false })
+          win.webContents.send(`cache:${id}`, { result: false, savePath })
         }
       });
     } catch (error) {
@@ -365,19 +365,19 @@ ipcMain.handle('channel', (event, { type, data }) => {
       }
       return { code: 1 }
     case 'preview':
-      if (data.url.includes('.pdf')) {
-        log.info('预览pdf文件')
-        shell.openPath(data.url)
-      } else {
-        log.info('预览其他文件')
-        modal = new BrowserWindow({
-          show: false,
-          webPreferences: {
-            session: session.fromPartition('preview')
-          }
-        });
-        modal.webContents.downloadURL(data.url)
-      }
+      // if (data.url.includes('.pdf')) {
+      //   log.info('预览pdf文件')
+      //   shell.openPath(data.url)
+      // } else {
+      //   log.info('预览其他文件')
+      modal = new BrowserWindow({
+        show: false,
+        webPreferences: {
+          session: session.fromPartition('preview')
+        }
+      });
+      modal.webContents.downloadURL(data.url)
+      // }
       return { code: 1 }
     case 'cacheFile':
       cacheModal = new BrowserWindow({

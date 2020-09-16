@@ -103,7 +103,7 @@ export default {
   },
   methods: {
     async handlePlay() {
-      if (this.cacheFile) {
+      if (this.cacheTimestamp === this.item.timestamp) {
         console.log('打开缓存');
         await this.$ipcRenderer.invoke('channel', {
           type: 'openCacheFile',
@@ -133,15 +133,17 @@ export default {
         });
       }
     },
-    async handleFinishCache(e, { result }) {
+    async handleFinishCache(e, { result, savePath }) {
       if (this.hideLoading) {
         this.hideLoading();
         this.hideLoading = null;
       }
       if (result) {
         // 缓存当前文件时间
-        const key = `cache-timestamp:${this.loginType}:${this.item.id}`;
-        this.$lowdb.set(key, this.item.timestamp);
+        const timestampKey = `cache-timestamp:${this.loginType}:${this.item.id}`;
+        const cacheKey = `cache:${this.loginType}:${this.item.id}`;
+        this.$lowdb.set(timestampKey, this.item.timestamp).write();
+        this.$lowdb.set(cacheKey, savePath).write();
         this.cacheTimestamp = this.item.timestamp;
         this.$message.success('缓存成功！');
       } else {
@@ -154,7 +156,7 @@ export default {
       const key = `cache:${this.loginType}:${this.item.id}`;
       this.cacheFile = this.$lowdb.get(key).value();
       const timestampKey = `cache-timestamp:${this.loginType}:${this.item.id}`;
-      this.cacheTimestamp = this.$lowdb.get(timestampKey).value;
+      this.cacheTimestamp = this.$lowdb.get(timestampKey).value();
     },
   },
 };
