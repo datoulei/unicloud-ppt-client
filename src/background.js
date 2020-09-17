@@ -258,7 +258,18 @@ app.on("ready", async () => {
       log.info("id", id)
 
       const saveBasePath = path.join(downloadPath, 'downloads', id, loginType);
-      let savePath = path.join(saveBasePath, fileName);
+      const ext = path.extname(fileName);
+      log.info("ext=", ext)
+      const name = path.basename(fileName, ext);
+      log.info("name=", name)
+      const md5Name = `${md5(name + Date.now())}`
+      log.info("md5Name=", md5Name)
+
+      const savePath = path.format({
+        dir: saveBasePath,
+        ext,
+        name: md5Name,
+      });
 
       if (!fs.existsSync(saveBasePath)) {
         fs.mkdirpSync(saveBasePath);
