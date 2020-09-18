@@ -11,7 +11,7 @@
       <a-list
         class="m-t-16"
         :dataSource="subSchedules"
-        :grid="{ gutter: 16, column: 3 }"
+        :grid="{ gutter: 16, column }"
         :split="false"
       >
         <a-list-item slot="renderItem" slot-scope="item">
@@ -33,6 +33,7 @@ export default {
   },
   components: { SubScheduleItem },
   computed: {
+    ...mapState(['column']),
     ...mapState('mainSchedule', { mainSchedule: 'selected' }),
     ...mapState('subSchedule', ['subSchedules']),
     duration() {

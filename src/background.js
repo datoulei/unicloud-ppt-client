@@ -22,6 +22,7 @@ const isDevelopment = process.env.NODE_ENV !== "production";
 let win;
 let loginWin;
 let timerWin;
+let previewWin;
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -178,6 +179,14 @@ app.on("ready", async () => {
       timerWin.webContents.openDevTools()
     }
   })
+  globalShortcut.register('Escape', () => {
+    log.info('Escape is pressed')
+    try {
+      previewWin.close()
+    } catch (error) {
+
+    }
+  })
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     try {
@@ -257,7 +266,7 @@ app.on("ready", async () => {
       const id = URL.parse(url, true).query.id;
       log.info("id", id)
 
-      const saveBasePath = path.join(downloadPath, 'downloads', id, loginType);
+      const saveBasePath = path.join(downloadPath, 'downloads');
       const ext = path.extname(fileName);
       log.info("ext=", ext)
       const name = path.basename(fileName, ext);
@@ -377,19 +386,26 @@ ipcMain.handle('channel', (event, { type, data }) => {
       }
       return { code: 1 }
     case 'preview':
-      // if (data.url.includes('.pdf')) {
-      //   log.info('预览pdf文件')
-      //   shell.openPath(data.url)
-      // } else {
-      //   log.info('预览其他文件')
-      modal = new BrowserWindow({
-        show: false,
-        webPreferences: {
-          session: session.fromPartition('preview')
-        }
-      });
-      modal.webContents.downloadURL(data.url)
-      // }
+      if (data.url.includes('.pdf')) {
+        log.info('预览pdf文件')
+        previewWin = new BrowserWindow({
+          fullscreen: true,
+          frame: true,
+        })
+        previewWin.loadURL(data.url);
+        previewWin.on("closed", () => {
+          previewWin = null;
+        });
+      } else {
+        log.info('预览其他文件')
+        modal = new BrowserWindow({
+          show: false,
+          webPreferences: {
+            session: session.fromPartition('preview')
+          }
+        });
+        modal.webContents.downloadURL(data.url)
+      }
       return { code: 1 }
     case 'cacheFile':
       cacheModal = new BrowserWindow({

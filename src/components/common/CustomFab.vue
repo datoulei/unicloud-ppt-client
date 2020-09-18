@@ -14,7 +14,7 @@
       <a-tooltip placement="left" title="刷新">
         <div class="menu-item refresh" @click="handleAction('refresh')"></div>
       </a-tooltip>
-      <a-tooltip v-if="routerName === 'Home'" placement="left" title="切换列数">
+      <a-tooltip placement="left" title="切换列数">
         <div class="menu-item column" @click="handleAction('column')"></div>
       </a-tooltip>
     </div>
