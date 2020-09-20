@@ -4,7 +4,7 @@
     @click="handleDetail"
   >
     <div :class="['header', style]">
-      <span class="time">{{ $moment(item.startDate).format('HH:mm') }}</span>
+      <span class="time">{{ item.startTime }}</span>
     </div>
     <div ref="container" class="body">
       <span ref="text" :class="['name', scroll && 'animate']">

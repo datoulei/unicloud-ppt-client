@@ -5,13 +5,7 @@
       <img :src="logo" class="logo" />
     </div>
     <div class="body">
-      <template v-for="date in sortDates">
-        <MainSchedulePanel
-          :key="date"
-          :date="date"
-          :mainSchedules="group[date]"
-        />
-      </template>
+      <MainSchedulePanel :date="date" :mainSchedules="mainSchedules" />
     </div>
   </div>
 </template>
@@ -25,14 +19,17 @@ export default {
   components: {
     MainSchedulePanel,
   },
+  data() {
+    return {
+      pages: [],
+      page: 1,
+    };
+  },
   computed: {
-    ...mapState(['screen']),
+    ...mapState(['screen', 'column']),
     ...mapState('mainSchedule', ['mainSchedules']),
-    group() {
-      return this.$lodash.groupBy(this.mainSchedules, 'date');
-    },
-    sortDates() {
-      return this.$lodash.sortBy(this.$lodash.keys(this.group));
+    date() {
+      return this.$moment(this.screen.date).format('YYYY年MM月DD日');
     },
     logo() {
       const loginType = this.$lowdb.get('loginType').value();
@@ -45,11 +42,30 @@ export default {
       return '/images/logo.png';
     },
   },
+  watch: {
+    column: {
+      handler: 'generatePages',
+      immediate: true,
+    },
+  },
   mounted() {
     this.getMainSchedules();
   },
   methods: {
     ...mapActions('mainSchedule', ['getMainSchedules']),
+    generatePages() {
+      const height = window.innerHeight - 184;
+      if (this.column === 1) {
+        // 1列
+        const itemHeight = 58;
+      } else if (this.column === 2) {
+        // 2列
+        const itemHeight = 106;
+      } else if (this.column === 3) {
+        // 3列
+        const itemHeight = 106;
+      }
+    },
   },
 };
 </script>
