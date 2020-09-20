@@ -94,19 +94,42 @@ function createLoginWindow() {
   });
 }
 
-function createTimerWindow() {
+function createTimerWindow(minutes = 30, position) {
   log.info('open timer window');
-  // const displays = screen.getAllDisplays()
-  // log.info("createTimerWindow -> displays", displays)
-  // let display = displays[1];
+  let x = 24;
+  let y = 24;
   let display = screen.getPrimaryDisplay();
   let width = display.bounds.width;
+  let height = display.bounds.height;
+  switch (position) {
+    case 'leftTop':
+      x = 24;
+      y = 24;
+      break;
+    case 'rightTop':
+      x = width - 110 - 24;
+      y = 24;
+      break;
+    case 'leftBottom':
+      x = 24;
+      y = height - 48 - 24;
+      break;
+    case 'rightBottom':
+      x = width - 110 - 24;
+      y = height - 48 - 24;
+
+      break;
+
+    default:
+      break;
+  }
   timerWin = new BrowserWindow({
     frame: false,
     width: 110,
     height: 48,
-    x: width - 110 - 24,
-    y: 48,
+    x,
+    y,
+    fullscreen: false,
     transparent: true,
     hasShadow: false,
     resizable: false,
@@ -124,7 +147,7 @@ function createTimerWindow() {
     log.info("createTimerWindow -> process.env.WEBPACK_DEV_SERVER_URL", process.env.WEBPACK_DEV_SERVER_URL)
     // Load the url of the dev server if in development mode
     timerWin.loadFile('../public/timer.html', {
-      query: { time: '30' }
+      query: { time: minutes }
     });
     // timerWin.loadURL(process.env.WEBPACK_DEV_SERVER_URL + '/timer');
     // if (!process.env.IS_TEST) loginWin.webContents.openDevTools();
@@ -164,7 +187,7 @@ app.on("activate", () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
-  Menu.setApplicationMenu(new Menu())
+  // Menu.setApplicationMenu(new Menu())
   const loginType = lowdb.get('loginType').value()
   log.info('is ready. loginType=', loginType);
   globalShortcut.register('CommandOrControl+Shift+J', () => {
@@ -177,14 +200,6 @@ app.on("ready", async () => {
     }
     if (timerWin) {
       timerWin.webContents.openDevTools()
-    }
-  })
-  globalShortcut.register('Escape', () => {
-    log.info('Escape is pressed')
-    try {
-      previewWin.close()
-    } catch (error) {
-
     }
   })
   if (isDevelopment && !process.env.IS_TEST) {
@@ -390,21 +405,35 @@ ipcMain.handle('channel', (event, { type, data }) => {
         log.info('预览pdf文件')
         previewWin = new BrowserWindow({
           fullscreen: true,
-          frame: true,
         })
         previewWin.loadURL(data.url);
         previewWin.on("closed", () => {
           previewWin = null;
+          globalShortcut.unregister('Escape')
         });
+        globalShortcut.register('Escape', () => {
+          log.info('Escape is pressed')
+          try {
+            previewWin.close()
+            timerWin.close()
+          } catch (error) {
+
+          }
+        })
       } else {
         log.info('预览其他文件')
-        modal = new BrowserWindow({
+        previewWin = new BrowserWindow({
           show: false,
           webPreferences: {
             session: session.fromPartition('preview')
           }
         });
-        modal.webContents.downloadURL(data.url)
+        previewWin.webContents.downloadURL(data.url)
+      }
+      if (data.minutes > 0) {
+        setTimeout(() => {
+          createTimerWindow(data.minutes, data.position)
+        }, 1500);
       }
       return { code: 1 }
     case 'cacheFile':

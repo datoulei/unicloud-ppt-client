@@ -5,8 +5,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-  <title><%= htmlWebpackPlugin.options.title %></title>
+  <title></title>
   <style>
     html,
     body {
@@ -33,18 +32,25 @@
 </head>
 
 <body>
-  <noscript>
-    <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.
-      Please enable it to continue.</strong>
-  </noscript>
   <div id="app">
-    <span class="timer">29:44</span>
+    <span id="timer" class="timer"></span>
   </div>
   <!-- built files will be auto injected -->
   <script>
     (function (params) {
       const query = location.search
-      console.log("query", query)
+      let minutes = parseInt(query.replace('?time=', ''))
+      let seconds = 0
+      document.getElementById('timer').innerText = `${minutes}`.padStart(2, '0') + ':' + `${seconds}`.padStart(2, '0')
+      setInterval(() => {
+        if (seconds > 0) {
+          seconds -= 1;
+        } else if (minutes > 0) {
+          minutes -= 1;
+          seconds = 59;
+        }
+        document.getElementById('timer').innerText = `${minutes}`.padStart(2, '0') + ':' + `${seconds}`.padStart(2, '0')
+      }, 1000);
     })();
   </script>
 </body>

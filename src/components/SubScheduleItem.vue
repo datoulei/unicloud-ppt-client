@@ -116,7 +116,11 @@ export default {
         }
         this.$ipcRenderer.invoke('channel', {
           type: 'preview',
-          data: { url },
+          data: {
+            url,
+            minutes: this.item.minutes,
+            position: this.item.position,
+          },
         });
       }
     },
