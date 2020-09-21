@@ -9,7 +9,7 @@ export default new Vuex.Store({
   state: {
     loginType: Vue.lowdb.get('loginType').value(),
     baseURL: Vue.lowdb.get('baseURL').value(),
-    column: 1,
+    column: Vue.lowdb.get('column').value() || 1,
     screen: Vue.lowdb.get('screen').value(),
   },
   getters: {
@@ -17,6 +17,7 @@ export default new Vuex.Store({
   },
   mutations: {
     SET_COLUMN(state, column) {
+      Vue.lowdb.set('column', column).write();
       state.column = column;
       return state;
     }

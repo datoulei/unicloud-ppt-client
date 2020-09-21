@@ -1,11 +1,11 @@
 <template>
   <div class="home">
     <div class="header" flex="cross:center">
-      <p flex-box="1" class="title">{{ screen.display_name }}</p>
+      <p flex-box="1" class="title">{{ screen.displayName }}</p>
       <img :src="logo" class="logo" />
     </div>
     <div class="body">
-      <MainSchedulePanel :date="date" :mainSchedules="mainSchedules" />
+      <MainSchedulePanel :date="date" :mainSchedules="list" />
     </div>
   </div>
 </template>
@@ -13,6 +13,7 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import MainSchedulePanel from '@/components/MainSchedulePanel';
+let timer;
 // @ is an alias to /src
 export default {
   name: 'Home',
@@ -21,8 +22,9 @@ export default {
   },
   data() {
     return {
-      pages: [],
-      page: 1,
+      rowPerPage: 0,
+      pages: 0,
+      pageIndex: 0,
     };
   },
   computed: {
@@ -41,6 +43,11 @@ export default {
       }
       return '/images/logo.png';
     },
+    list() {
+      const start = this.column * this.rowPerPage * this.pageIndex;
+      const end = start + this.column * this.rowPerPage;
+      return this.mainSchedules.slice(start, end);
+    },
   },
   watch: {
     column: {
@@ -51,20 +58,58 @@ export default {
   mounted() {
     this.getMainSchedules();
   },
+  beforeDestroy() {
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+    }
+  },
   methods: {
     ...mapActions('mainSchedule', ['getMainSchedules']),
     generatePages() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+        this.pageIndex = 0;
+        this.pages = 0;
+        this.rowPerPage = 0;
+      }
       const height = window.innerHeight - 184;
+      const margin = 16;
+      console.log('generatePages -> height', height);
       if (this.column === 1) {
         // 1列
         const itemHeight = 58;
+        this.rowPerPage = Math.floor(height / (itemHeight + margin));
+        this.pages = Math.ceil(this.mainSchedules.length / this.rowPerPage);
+        console.log('column1 generatePages -> rowPerPage', this.rowPerPage);
+        console.log('column1 generatePages -> pages', this.pages);
       } else if (this.column === 2) {
         // 2列
         const itemHeight = 106;
+        this.rowPerPage = Math.floor(height / (itemHeight + margin));
+        this.pages = Math.ceil(
+          this.mainSchedules.length / (this.rowPerPage * 2),
+        );
+        console.log('column2 generatePages -> rowPerPage', this.rowPerPage);
+        console.log('column2 generatePages -> pages', this.pages);
       } else if (this.column === 3) {
         // 3列
         const itemHeight = 106;
+        this.rowPerPage = Math.floor(height / (itemHeight + margin));
+        this.pages = Math.ceil(
+          this.mainSchedules.length / (this.rowPerPage * 3),
+        );
+        console.log('column3 generatePages -> rowPerPage', this.rowPerPage);
+        console.log('column3 generatePages -> pages', this.pages);
       }
+      timer = setInterval(() => {
+        if (this.pageIndex < this.pages - 1) {
+          this.pageIndex += 1;
+        } else {
+          this.pageIndex = 0;
+        }
+      }, 10 * 1000);
     },
   },
 };
