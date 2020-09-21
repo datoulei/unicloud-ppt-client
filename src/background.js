@@ -31,7 +31,6 @@ protocol.registerSchemesAsPrivileged([
 
 function createWindow() {
   // Create the browser window.
-
   win = new BrowserWindow({
     frame: false,
     fullscreen: true,
@@ -96,30 +95,30 @@ function createLoginWindow() {
 
 function createTimerWindow(minutes = 30, position) {
   log.info('open timer window');
-  let x = 24;
-  let y = 24;
-  let display = screen.getPrimaryDisplay();
+  const displays = screen.getAllDisplays()
+  console.log("createTimerWindow -> displays", displays)
+  let display = displays[displays.length - 1]
+  let x = display.bounds.x;
+  let y = display.bounds.y;
   let width = display.bounds.width;
   let height = display.bounds.height;
   switch (position) {
     case 'leftTop':
-      x = 24;
-      y = 24;
+      x += 24;
+      y += 24;
       break;
     case 'rightTop':
-      x = width - 110 - 24;
-      y = 24;
+      x += width - 110 - 24;
+      y += 24;
       break;
     case 'leftBottom':
-      x = 24;
-      y = height - 48 - 24;
+      x += 24;
+      y += height - 48 - 24;
       break;
     case 'rightBottom':
-      x = width - 110 - 24;
-      y = height - 48 - 24;
-
+      x += width - 110 - 24;
+      y += height - 48 - 24;
       break;
-
     default:
       break;
   }
@@ -222,8 +221,9 @@ app.on("ready", async () => {
     // const url = item.getURL();
     // const startTime = item.getStartTime();
     // const initialState = item.getState();
+    await lowdb.read()
+    const screen = lowdb.get('screen').value()
     const downloadPath = app.getPath('userData');
-
     const saveBasePath = path.join(downloadPath, 'temp');
     log.info("saveBasePath", saveBasePath)
     // savePath基础信息
@@ -231,12 +231,12 @@ app.on("ready", async () => {
     log.info("ext=", ext)
     const name = path.basename(fileName, ext);
     log.info("name=", name)
-    const md5Name = `${md5(name + Date.now())}`
-    log.info("md5Name=", md5Name)
+    const saveName = `${screen.id}-${name}-${Date.now()}`
+    log.info("saveName=", saveName)
     const savePath = path.format({
       dir: saveBasePath,
       ext,
-      name: md5Name,
+      name: saveName,
     });
     log.info("savePath=", savePath)
 
@@ -274,6 +274,7 @@ app.on("ready", async () => {
       log.info('开始缓存文件')
       await lowdb.read()
       const loginType = lowdb.get('loginType').value()
+      const screen = lowdb.get('screen').value()
       log.info("loginType", loginType)
       const fileName = item.getFilename();
       const url = item.getURL();
@@ -286,13 +287,13 @@ app.on("ready", async () => {
       log.info("ext=", ext)
       const name = path.basename(fileName, ext);
       log.info("name=", name)
-      const md5Name = `${md5(name + Date.now())}`
-      log.info("md5Name=", md5Name)
+      const saveName = `${screen.id}-${name}-${Date.now()}`
+      log.info("saveName=", saveName)
 
       const savePath = path.format({
         dir: saveBasePath,
         ext,
-        name: md5Name,
+        name: saveName,
       });
 
       if (!fs.existsSync(saveBasePath)) {
@@ -431,9 +432,21 @@ ipcMain.handle('channel', (event, { type, data }) => {
         previewWin.webContents.downloadURL(data.url)
       }
       if (data.minutes > 0) {
+        try {
+          timerWin.close()
+        } catch (error) {
+
+        }
         setTimeout(() => {
           createTimerWindow(data.minutes, data.position)
-        }, 1500);
+        }, 3000);
+      }
+      return { code: 1 }
+    case 'closeTimer':
+      try {
+        timerWin.close()
+      } catch (error) {
+
       }
       return { code: 1 }
     case 'cacheFile':
