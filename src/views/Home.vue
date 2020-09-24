@@ -52,10 +52,12 @@ export default {
   watch: {
     column: {
       handler: 'generatePages',
-      immediate: true,
+    },
+    mainSchedules: {
+      handler: 'generatePages',
     },
   },
-  mounted() {
+  created() {
     this.getMainSchedules();
   },
   beforeDestroy() {
