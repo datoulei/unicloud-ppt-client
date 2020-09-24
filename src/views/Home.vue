@@ -74,6 +74,7 @@ export default {
         this.pages = 0;
         this.rowPerPage = 0;
       }
+      console.log('构造分页数据');
       const height = window.innerHeight - 184;
       const margin = 16;
       console.log('generatePages -> height', height);
@@ -103,7 +104,9 @@ export default {
         console.log('column3 generatePages -> rowPerPage', this.rowPerPage);
         console.log('column3 generatePages -> pages', this.pages);
       }
+      console.log('设置定时器');
       timer = setInterval(() => {
+        console.log('触发翻页逻辑，当前页数:', this.pageIndex);
         if (this.pageIndex < this.pages - 1) {
           this.pageIndex += 1;
         } else {

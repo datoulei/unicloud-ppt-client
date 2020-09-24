@@ -6,6 +6,7 @@ import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import * as URL from 'url';
 import * as path from 'path';
 import * as fs from 'fs-extra';
+import * as psList from 'ps-list';
 import md5 from 'md5';
 import lowdb from './lowdb'
 // import { autoUpdater } from 'electron-updater'
@@ -186,6 +187,9 @@ app.on("activate", () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
+  const list = await psList();
+  const exists = list.filter(item => item.cmd.includes('PowerPoint'))
+  console.log("exists", exists)
   // Menu.setApplicationMenu(new Menu())
   const loginType = lowdb.get('loginType').value()
   log.info('is ready. loginType=', loginType);
@@ -269,17 +273,17 @@ app.on("ready", async () => {
     });
 
   });
-  session.fromPartition('cache').on('will-download', async (event, item) => {
+  session.fromPartition('cache').on('will-download', async (event, item, webContent) => {
     try {
-      log.info('开始缓存文件')
+      log.info('开始缓存文件', webContent.itemId)
       await lowdb.read()
       const loginType = lowdb.get('loginType').value()
       const screen = lowdb.get('screen').value()
       log.info("loginType", loginType)
       const fileName = item.getFilename();
-      const url = item.getURL();
+      log.info("fileName", fileName)
       const downloadPath = app.getPath('userData');
-      const id = URL.parse(url, true).query.id;
+      const id = webContent.itemId
       log.info("id", id)
 
       const saveBasePath = path.join(downloadPath, 'downloads');
@@ -456,6 +460,7 @@ ipcMain.handle('channel', (event, { type, data }) => {
           session: session.fromPartition('cache')
         }
       });
+      cacheModal.webContents.itemId = data.itemId
       cacheModal.webContents.downloadURL(data.url)
       return { code: 1 }
     case 'openCacheFile':
@@ -471,4 +476,3 @@ ipcMain.handle('channel', (event, { type, data }) => {
       break;
   }
 })
-

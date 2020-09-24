@@ -126,14 +126,14 @@ export default {
     },
     async handleCache() {
       if (this.item.ppt) {
-        let url = this.item.ppt + '?id=' + this.item.id;
+        let url = this.item.ppt;
         if (this.loginType === 'local') {
           url = `${this.baseURL}/${url}`;
         }
         this.hideLoading = this.$message.loading('正在缓存，请稍后...', 0);
         this.$ipcRenderer.invoke('channel', {
           type: 'cacheFile',
-          data: { url },
+          data: { url, itemId: this.item.id },
         });
       }
     },

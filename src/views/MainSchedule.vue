@@ -46,18 +46,6 @@ export default {
   },
   mounted() {
     this.fetchData();
-    document.addEventListener(
-      'visibilitychange',
-      this.handleVisibilityChange,
-      false,
-    );
-  },
-  beforeDestroy() {
-    document.removeEventListener(
-      'visibilitychange',
-      this.handleVisibilityChange,
-      false,
-    );
   },
   methods: {
     ...mapActions('subSchedule', ['getSubSchedules']),
@@ -67,11 +55,6 @@ export default {
         await this.getSubSchedules();
       } catch (error) {}
       this.loading = false;
-    },
-    handleVisibilityChange() {
-      if (!document.hidden) {
-        this.$ipcRenderer.invoke('channel', { type: 'closeTimer' });
-      }
     },
   },
 };
