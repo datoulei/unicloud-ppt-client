@@ -3,11 +3,8 @@
 import { app, screen, session, shell, protocol, BrowserWindow, ipcMain, globalShortcut, Menu } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
-import * as URL from 'url';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import * as psList from 'ps-list';
-import md5 from 'md5';
 import lowdb from './lowdb'
 // import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
@@ -185,9 +182,6 @@ app.on("activate", () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
-  const list = await psList();
-  const exists = list.filter(item => item.cmd.includes('PowerPoint'))
-  console.log("exists", exists)
   // Menu.setApplicationMenu(new Menu())
   const loginType = lowdb.get('loginType').value()
   log.info('is ready. loginType=', loginType);
