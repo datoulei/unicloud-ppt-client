@@ -105,14 +105,15 @@ export default {
         console.log('column3 generatePages -> pages', this.pages);
       }
       console.log('设置定时器');
-      timer = setInterval(() => {
-        console.log('触发翻页逻辑，当前页数:', this.pageIndex);
-        if (this.pageIndex < this.pages - 1) {
-          this.pageIndex += 1;
-        } else {
-          this.pageIndex = 0;
-        }
-      }, 10 * 1000);
+      timer = setInterval(this.changePage, 10 * 1000);
+    },
+    changePage() {
+      console.log('触发翻页逻辑，当前页数:', this.pageIndex);
+      if (this.pageIndex < this.pages - 1) {
+        this.pageIndex += 1;
+      } else {
+        this.pageIndex = 0;
+      }
     },
   },
 };
