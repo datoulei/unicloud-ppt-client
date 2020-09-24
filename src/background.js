@@ -96,9 +96,7 @@ function createLoginWindow() {
 
 function createTimerWindow(minutes = 30, position) {
   log.info('open timer window');
-  const displays = screen.getAllDisplays()
-  console.log("createTimerWindow -> displays", displays)
-  let display = displays[displays.length - 1]
+  let display = screen.getPrimaryDisplay()
   let x = display.bounds.x;
   let y = display.bounds.y;
   let width = display.bounds.width;
@@ -444,13 +442,6 @@ ipcMain.handle('channel', (event, { type, data }) => {
         setTimeout(() => {
           createTimerWindow(data.minutes, data.position)
         }, 3000);
-      }
-      return { code: 1 }
-    case 'closeTimer':
-      try {
-        timerWin.close()
-      } catch (error) {
-
       }
       return { code: 1 }
     case 'cacheFile':
