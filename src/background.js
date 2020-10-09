@@ -134,6 +134,7 @@ function createTimerWindow(minutes = 30, position) {
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
       additionalArguments: ['timer-window'],
+      webSecurity: false
       // enableRemoteModule: true
     }
   })
@@ -150,7 +151,7 @@ function createTimerWindow(minutes = 30, position) {
     createProtocol("app");
     // Load the index.html when not in development
     // timerWin.loadURL("app://./index.html");
-    timerWin.loadFile('./public/timer.html');
+    timerWin.loadURL('app://./timer.html');
   }
   // timerWin.webContents.openDevTools();
 
