@@ -1,6 +1,6 @@
 {
   "name": "ppt_management_client",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
