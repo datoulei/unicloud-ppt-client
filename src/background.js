@@ -119,16 +119,16 @@ function createTimerWindow(minutes = 30, position) {
       break;
   }
   timerWin = new BrowserWindow({
-    frame: false,
+    // frame: false,
     width: 110,
     height: 48,
     x,
     y,
-    fullscreen: false,
+    // fullscreen: false,
     // transparent: true,
     // hasShadow: false,
-    resizable: false,
-    alwaysOnTop: true,
+    // resizable: false,
+    // alwaysOnTop: true,
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
