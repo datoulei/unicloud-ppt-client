@@ -107,7 +107,11 @@ export default {
         console.log('打开缓存');
         await this.$ipcRenderer.invoke('channel', {
           type: 'openCacheFile',
-          data: { url: this.cacheFile },
+          data: {
+            url: this.cacheFile,
+            minutes: this.item.minutes,
+            position: this.item.position,
+          },
         });
       } else if (this.item.ppt) {
         let url = this.item.ppt;

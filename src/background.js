@@ -125,8 +125,8 @@ function createTimerWindow(minutes = 30, position) {
     x,
     y,
     fullscreen: false,
-    transparent: true,
-    hasShadow: false,
+    // transparent: true,
+    // hasShadow: false,
     resizable: false,
     alwaysOnTop: true,
     webPreferences: {
@@ -134,7 +134,7 @@ function createTimerWindow(minutes = 30, position) {
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
       additionalArguments: ['timer-window'],
-      enableRemoteModule: true
+      // enableRemoteModule: true
     }
   })
 
@@ -455,6 +455,16 @@ ipcMain.handle('channel', (event, { type, data }) => {
       // } else {
       // }
       shell.openPath(data.url)
+      if (data.minutes > 0) {
+        try {
+          timerWin.close()
+        } catch (error) {
+
+        }
+        setTimeout(() => {
+          createTimerWindow(data.minutes, data.position)
+        }, 3000);
+      }
       return { code: 1 }
     default:
       log.info('未知操作：', type)
