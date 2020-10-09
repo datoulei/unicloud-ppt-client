@@ -119,16 +119,16 @@ function createTimerWindow(minutes = 30, position) {
       break;
   }
   timerWin = new BrowserWindow({
-    // frame: false,
+    frame: false,
     width: 110,
     height: 48,
     x,
     y,
-    // fullscreen: false,
-    // transparent: true,
-    // hasShadow: false,
-    // resizable: false,
-    // alwaysOnTop: true,
+    fullscreen: false,
+    transparent: true,
+    hasShadow: false,
+    resizable: false,
+    alwaysOnTop: true,
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
@@ -151,7 +151,7 @@ function createTimerWindow(minutes = 30, position) {
     createProtocol("app");
     // Load the index.html when not in development
     // timerWin.loadURL("app://./index.html");
-    timerWin.loadURL('app://./timer.html');
+    timerWin.loadURL(`app://./timer.html?time=${minutes}`);
   }
   // timerWin.webContents.openDevTools();
 
