@@ -139,6 +139,8 @@ function createTimerWindow(minutes = 30, position) {
     }
   })
 
+  timerWin.setAlwaysOnTop(true, 'screen-saver')
+
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     log.info("createTimerWindow -> process.env.WEBPACK_DEV_SERVER_URL", process.env.WEBPACK_DEV_SERVER_URL)
     // Load the url of the dev server if in development mode
@@ -158,6 +160,37 @@ function createTimerWindow(minutes = 30, position) {
   timerWin.on("closed", () => {
     timerWin = null;
   });
+
+  watchSlideShowEnd()
+}
+
+const watchSlideShowEnd = () => {
+  log.info('开始监听ppt')
+  try {
+
+    var winax = require('winax');
+    var interval = setInterval(function () {
+      winax.peekAndDispatchMessages(); // allows ActiveX event to be dispatched
+    }, 50);
+    var application = new ActiveXObject('PowerPoint.Application');
+    var connectionPoints = winax.getConnectionPoints(application);
+    var connectionPoint = connectionPoints[0];
+    connectionPoint.advise({
+      SlideShowEnd: () => {
+        log.info('触发关闭事件')
+        try {
+          timerWin.close()
+        } catch (error) {
+
+        }
+        clearInterval(interval);
+        application.Quit();
+        winax.release(application);
+      }
+    })
+  } catch (e) {
+    log.error(e)
+  }
 }
 
 // Quit when all windows are closed.

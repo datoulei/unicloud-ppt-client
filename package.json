@@ -31,7 +31,8 @@
     "vue": "^2.6.12",
     "vue-ls": "^3.2.1",
     "vue-router": "^3.4.3",
-    "vuex": "^3.5.1"
+    "vuex": "^3.5.1",
+    "winax": "^1.20.0"
   },
   "devDependencies": {
     "@types/electron": "^1.6.10",
