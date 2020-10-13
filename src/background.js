@@ -160,8 +160,6 @@ function createTimerWindow(minutes = 30, position) {
   timerWin.on("closed", () => {
     timerWin = null;
   });
-
-  watchSlideShowEnd()
 }
 
 const watchSlideShowEnd = () => {
@@ -181,10 +179,10 @@ const watchSlideShowEnd = () => {
           timerWin.close()
         } catch (error) { }
         clearInterval(interval);
-        application.Quit();
         winax.release(application);
       }
     })
+    application.Visible = true;
   } catch (e) {
     log.error(e)
     clearInterval(interval);
@@ -459,6 +457,7 @@ ipcMain.handle('channel', (event, { type, data }) => {
             session: session.fromPartition('preview')
           }
         });
+        watchSlideShowEnd()
         previewWin.webContents.downloadURL(data.url)
       }
       if (data.minutes > 0) {
