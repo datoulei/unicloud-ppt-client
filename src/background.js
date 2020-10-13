@@ -167,7 +167,6 @@ function createTimerWindow(minutes = 30, position) {
 const watchSlideShowEnd = () => {
   log.info('开始监听ppt')
   try {
-
     var winax = require('winax');
     var interval = setInterval(function () {
       winax.peekAndDispatchMessages(); // allows ActiveX event to be dispatched
@@ -180,9 +179,7 @@ const watchSlideShowEnd = () => {
         log.info('触发关闭事件')
         try {
           timerWin.close()
-        } catch (error) {
-
-        }
+        } catch (error) { }
         clearInterval(interval);
         application.Quit();
         winax.release(application);
@@ -190,6 +187,9 @@ const watchSlideShowEnd = () => {
     })
   } catch (e) {
     log.error(e)
+    clearInterval(interval);
+    application.Quit();
+    winax.release(application);
   }
 }
 
