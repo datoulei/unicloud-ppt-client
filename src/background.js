@@ -173,7 +173,7 @@ const watchSlideShowEnd = () => {
     var connectionPoints = winax.getConnectionPoints(application);
     var connectionPoint = connectionPoints[0];
     connectionPoint.advise({
-      SlideShowEnd: () => {
+      PresentationClose: () => {
         log.info('触发关闭事件')
         try {
           timerWin.close()
@@ -184,7 +184,7 @@ const watchSlideShowEnd = () => {
     })
     application.Visible = true;
   } catch (e) {
-    log.error(e)
+    log.info(e)
     clearInterval(interval);
     application.Quit();
     winax.release(application);
