@@ -11,6 +11,8 @@ import log from 'electron-log'
 log.transports.console.level = false;
 log.transports.console.level = 'silly'
 const isDevelopment = process.env.NODE_ENV !== "production";
+import psList from 'ps-list'
+import { execFileSync } from 'child_process'
 // autoUpdater.logger = log
 // autoUpdater.checkForUpdatesAndNotify()
 
@@ -155,6 +157,10 @@ function createTimerWindow(minutes = 30, position) {
     // timerWin.loadURL("app://./index.html");
     timerWin.loadURL(`app://./timer.html?time=${minutes}`);
   }
+
+  setTimeout(() => {
+    watchPowerPointClose()
+  }, 5000);
   // timerWin.webContents.openDevTools();
 
   timerWin.on("closed", () => {
@@ -162,32 +168,54 @@ function createTimerWindow(minutes = 30, position) {
   });
 }
 
-const watchSlideShowEnd = () => {
-  log.info('开始监听ppt')
-  try {
-    var winax = require('winax');
+// const watchSlideShowEnd = () => {
+//   log.info('开始监听ppt')
+//   try {
+//     var winax = require('winax');
+//     var interval = setInterval(function () {
+//       winax.peekAndDispatchMessages(); // allows ActiveX event to be dispatched
+//     }, 50);
+//     var application = new ActiveXObject('PowerPoint.Application');
+//     var connectionPoints = winax.getConnectionPoints(application);
+//     var connectionPoint = connectionPoints[0];
+//     connectionPoint.advise({
+//       PresentationClose: () => {
+//         log.info('触发关闭事件')
+//         try {
+//           timerWin.close()
+//         } catch (error) { }
+//         clearInterval(interval);
+//         winax.release(application);
+//       }
+//     })
+//     application.Visible = true;
+//   } catch (e) {
+//     log.info(e)
+//     clearInterval(interval);
+//     application.Quit();
+//     winax.release(application);
+//   }
+// }
+
+const watchPowerPointClose = async () => {
+  const list = await psList()
+  const pptList = list.filter(item => item.cmd.includes('PowerPoint'))
+  if (pptList.length > 0) {
+    log.info('开始监听关闭ppt事件')
     var interval = setInterval(function () {
-      winax.peekAndDispatchMessages(); // allows ActiveX event to be dispatched
+      psList().then(list => {
+        const pptList = list.filter(item => item.cmd.includes('PowerPoint'))
+        log.info('ppt进程=', pptList)
+        if (pptList.length === 0) {
+          clearInterval(interval)
+          try {
+            timerWin.close()
+          } catch (error) {
+
+          }
+        }
+      })
     }, 50);
-    var application = new ActiveXObject('PowerPoint.Application');
-    var connectionPoints = winax.getConnectionPoints(application);
-    var connectionPoint = connectionPoints[0];
-    connectionPoint.advise({
-      PresentationClose: () => {
-        log.info('触发关闭事件')
-        try {
-          timerWin.close()
-        } catch (error) { }
-        clearInterval(interval);
-        winax.release(application);
-      }
-    })
-    application.Visible = true;
-  } catch (e) {
-    log.info(e)
-    clearInterval(interval);
-    application.Quit();
-    winax.release(application);
   }
 }
 
@@ -457,7 +485,6 @@ ipcMain.handle('channel', (event, { type, data }) => {
             session: session.fromPartition('preview')
           }
         });
-        watchSlideShowEnd()
         previewWin.webContents.downloadURL(data.url)
       }
       if (data.minutes > 0) {

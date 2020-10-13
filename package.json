@@ -26,13 +26,13 @@
     "moment": "^2.29.0",
     "nedb": "^1.8.0",
     "normalize.css": "^8.0.1",
+    "ps-list": "^7.2.0",
     "sortablejs": "^1.12.0",
     "v-clipboard": "^2.2.3",
     "vue": "^2.6.12",
     "vue-ls": "^3.2.1",
     "vue-router": "^3.4.3",
-    "vuex": "^3.5.1",
-    "winax": "^1.20.0"
+    "vuex": "^3.5.1"
   },
   "devDependencies": {
     "@types/electron": "^1.6.10",
