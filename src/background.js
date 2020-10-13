@@ -160,7 +160,7 @@ function createTimerWindow(minutes = 30, position) {
 
   setTimeout(() => {
     watchPowerPointClose()
-  }, 5000);
+  }, 1000);
   // timerWin.webContents.openDevTools();
 
   timerWin.on("closed", () => {
@@ -199,7 +199,8 @@ function createTimerWindow(minutes = 30, position) {
 
 const watchPowerPointClose = async () => {
   const list = await psList()
-  const pptList = list.filter(item => item.cmd.includes('PowerPoint'))
+  const pptList = list.filter(item => /point/ig.test(item.cmd))
+  log.info("watchPowerPointClose -> pptList", pptList)
   if (pptList.length > 0) {
     log.info('开始监听关闭ppt事件')
     var interval = setInterval(function () {
@@ -216,6 +217,8 @@ const watchPowerPointClose = async () => {
         }
       })
     }, 50);
+  } else {
+    log.info('检测不到ppt程序')
   }
 }
 
