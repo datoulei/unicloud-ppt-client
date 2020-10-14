@@ -199,13 +199,14 @@ function createTimerWindow(minutes = 30, position) {
 
 const watchPowerPointClose = async () => {
   const list = await psList()
-  const pptList = list.filter(item => /point/ig.test(item.cmd))
+  console.log(list);
+  const pptList = list.filter(item => /powerpnt/ig.test(item.name))
   log.info("watchPowerPointClose -> pptList", pptList)
   if (pptList.length > 0) {
     log.info('开始监听关闭ppt事件')
     var interval = setInterval(function () {
       psList().then(list => {
-        const pptList = list.filter(item => item.cmd.includes('PowerPoint'))
+        const pptList = list.filter(item => /powerpnt/ig.test(item.name))
         log.info('ppt进程=', pptList)
         if (pptList.length === 0) {
           clearInterval(interval)
