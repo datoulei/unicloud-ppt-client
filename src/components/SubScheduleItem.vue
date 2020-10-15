@@ -80,7 +80,10 @@ export default {
       return `${this.item.startTime}-${this.item.endTime}`;
     },
     avatar() {
-      if (this.loginType === 'internet') {
+      if (
+        this.loginType === 'internet' ||
+        this.item.avatar === '/images/default_avatar.png'
+      ) {
         return this.item.avatar;
       } else {
         return `${this.baseURL}/${this.item.avatar}`;
