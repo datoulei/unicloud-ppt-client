@@ -44,6 +44,8 @@ jobs:
         if: matrix.os == 'windows-2019'
         run: |
           npm run electron:build-win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # step5: cleanup artifacts in dist_electron
       - name: cleanup artifacts for windows

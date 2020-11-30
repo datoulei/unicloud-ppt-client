@@ -244,8 +244,8 @@ export default {
   }
   .logo {
     position: absolute;
-    left: 93px;
-    top: 198px;
+    left: 126px;
+    top: 212px;
     width: 192px;
     height: 52px;
   }
