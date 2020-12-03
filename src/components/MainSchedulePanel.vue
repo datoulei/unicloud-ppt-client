@@ -12,7 +12,7 @@
     <a-list
       class="m-t-16"
       :dataSource="mainSchedules"
-      :grid="{ gutter: 16, column }"
+      :grid="{ gutter, column }"
       :split="false"
     >
       <a-list-item slot="renderItem" slot-scope="item">
@@ -42,6 +42,13 @@ export default {
   computed: {
     ...mapState(['column']),
     ...mapGetters(['style']),
+    gutter() {
+      if (this.column === 1) {
+        return 30;
+      } else {
+        return 16;
+      }
+    },
   },
 };
 </script>

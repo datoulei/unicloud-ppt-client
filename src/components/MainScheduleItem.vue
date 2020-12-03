@@ -70,6 +70,7 @@ export default {
   background: rgba(245, 245, 245, 1);
   border: 1px solid rgba(229, 229, 229, 1);
   cursor: pointer;
+  border-radius: 4px;
   .header {
     text-align: center;
     &.red {
@@ -115,8 +116,11 @@ export default {
     align-items: stretch;
     .header {
       width: 125px;
-      height: 56px;
-      line-height: 56px;
+      height: 104px;
+      line-height: 104px;
+    }
+    .body {
+      line-height: 80px;
     }
   }
   &.column-2,

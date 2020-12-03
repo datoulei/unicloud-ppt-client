@@ -37,12 +37,12 @@
       </div>
       <div class="body" flex>
         <img :src="avatar" alt="" class="avatar" />
-        <div class="content m-l-16" flex-box="1">
+        <div class="content m-l-37" flex-box="1">
           <p class="guest">{{ item.guestName }}</p>
-          <p class="name text-hidden m-t-8">
+          <p class="work">{{ item.work }}</p>
+          <p class="name text-hidden m-t-36">
             {{ item.name }}
           </p>
-          <p class="work m-t-16">{{ item.work }}</p>
         </div>
       </div>
     </template>
@@ -195,13 +195,13 @@ export default {
   }
 }
 .body {
-  padding: 16px;
-  padding-top: 20px;
+  padding: 20px;
+  padding-left: 29px;
   background-color: #e5e5e5;
   .avatar {
-    width: 102px;
-    min-width: 102px;
-    height: 102px;
+    width: 115.76px;
+    min-width: 115.76px;
+    height: 127px;
     border-radius: 4px;
   }
   .content {
@@ -211,22 +211,23 @@ export default {
     font-size: 24px;
     font-family: PingFangTC-Semibold, PingFangTC;
     font-weight: 600;
-    color: rgba(51, 51, 51, 1);
-    line-height: 32px;
+    color: #333;
+    line-height: 33px;
   }
   .name {
-    font-size: 20px;
+    font-size: 16px;
     font-family: PingFangTC-Regular, PingFangTC;
     font-weight: 400;
-    color: rgba(51, 51, 51, 1);
-    line-height: 28px;
+    color: #333;
+    line-height: 19px;
     width: 100%;
+    line-clamp: 2;
   }
   .work {
     font-size: 16px;
     font-family: PingFangTC-Regular, PingFangTC;
     font-weight: 400;
-    color: rgba(153, 153, 153, 1);
+    color: #333;
     line-height: 22px;
   }
 }

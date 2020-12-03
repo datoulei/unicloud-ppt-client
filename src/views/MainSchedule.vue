@@ -1,15 +1,20 @@
 <template>
   <div class="page">
     <div class="header" flex="cross:center">
-      <img src="/images/icon_calendar.png" alt="" class="icon" />
-      <div class="m-l-16">
-        <p class="title">{{ mainSchedule.name }}</p>
-        <p class="time m-t-8">{{ duration }}</p>
+      <img :src="logo" alt="" class="logo" />
+      <div class="m-l-26">
+        <p class="title">{{ screen.name }}</p>
       </div>
+    </div>
+    <div class="date" flex="cross:center">
+      <a-icon
+        type="clock-circle"
+        :style="{ fontSize: '16px', color: '#B8B8B8' }"
+      ></a-icon>
+      <span class="m-l-8">{{ screen.date }}</span>
     </div>
     <div class="body">
       <a-list
-        class="m-t-16"
         :dataSource="subSchedules"
         :grid="{ gutter: 16, column }"
         :split="false"
@@ -33,9 +38,19 @@ export default {
   },
   components: { SubScheduleItem },
   computed: {
-    ...mapState(['column']),
+    ...mapState(['screen', 'column']),
     ...mapState('mainSchedule', { mainSchedule: 'selected' }),
     ...mapState('subSchedule', ['subSchedules']),
+    logo() {
+      const loginType = this.$lowdb.get('loginType').value();
+      if (loginType === 'internet') {
+        return this.screen.logo;
+      } else if (this.screen.logo && this.screen.logo !== '/images/logo.png') {
+        const baseURL = this.$lowdb.get('baseURL').value();
+        return `${baseURL}/${this.screen.logo}`;
+      }
+      return '/images/logo.png';
+    },
     duration() {
       const startTime = this.$moment(this.mainSchedule.startDate).format(
         'HH:mm',
@@ -65,9 +80,9 @@ export default {
   height: 100px;
   padding: 0 24px;
   background: #f5f5f5;
-  .icon {
-    width: 48px;
-    height: 48px;
+  .logo {
+    width: 147px;
+    height: 40px;
   }
   .title {
     font-size: 24px;
@@ -76,6 +91,7 @@ export default {
     color: rgba(51, 51, 51, 1);
     line-height: 32px;
   }
+
   .time {
     font-size: 16px;
     font-family: PingFangTC-Regular, PingFangTC;
@@ -84,7 +100,14 @@ export default {
     line-height: 22px;
   }
 }
+.date {
+  margin-top: 26px;
+  margin-left: 26px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333333;
+}
 .body {
-  padding: 24px;
+  padding: 22px 25px;
 }
 </style>

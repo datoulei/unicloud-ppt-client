@@ -78,11 +78,12 @@ export default {
       }
       console.log('构造分页数据');
       const height = window.innerHeight - 184;
-      const margin = 16;
+      let margin = 16;
       console.log('generatePages -> height', height);
       if (this.column === 1) {
         // 1列
-        const itemHeight = 58;
+        margin = 30;
+        const itemHeight = 104;
         this.rowPerPage = Math.floor(height / (itemHeight + margin));
         this.pages = Math.ceil(this.mainSchedules.length / this.rowPerPage);
         console.log('column1 generatePages -> rowPerPage', this.rowPerPage);
