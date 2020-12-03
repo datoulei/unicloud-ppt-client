@@ -174,6 +174,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.sub-schedule-item {
+  border-radius: 4px;
+  overflow: hidden;
+}
 .header {
   height: 48px;
   padding: 8px 16px;

@@ -1,8 +1,8 @@
 <template>
   <div class="home">
     <div class="header" flex="cross:center">
-      <p flex-box="1" class="title">{{ screen.displayName }}</p>
       <img :src="logo" class="logo" />
+      <p flex-box="1" class="title">{{ screen.displayName }}</p>
     </div>
     <div class="body">
       <MainSchedulePanel :date="date" :mainSchedules="list" />
@@ -124,7 +124,7 @@ export default {
 
 <style lang="less" scoped>
 .header {
-  height: 100px;
+  height: 122px;
   padding: 0 24px;
   background: #f5f5f5;
   .title {
@@ -135,8 +135,9 @@ export default {
     line-height: 32px;
   }
   .logo {
-    width: 147px;
-    height: 40px;
+    width: 74px;
+    height: 74px;
+    margin-right: 26px;
   }
 }
 .body {

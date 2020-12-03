@@ -46,7 +46,7 @@ export default {
   }
   .action-bar {
     height: 16px;
-    border-left: 1px solid rgba(255, 255, 255, 0.35);
+    // border-left: 1px solid rgba(255, 255, 255, 0.35);
   }
   .mode {
     line-height: 2;
