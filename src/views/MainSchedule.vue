@@ -1,10 +1,10 @@
 <template>
   <div class="page">
     <div class="header" flex="cross:center">
-      <img :src="logo" alt="" class="logo" />
-      <div class="m-l-26">
+      <div class="m-l-26" flex-box="1">
         <p class="title">{{ screen.name }}</p>
       </div>
+      <img :src="logo" alt="" class="logo" />
     </div>
     <div class="date" flex="cross:center">
       <a-icon
@@ -81,8 +81,8 @@ export default {
   padding: 0 24px;
   background: #f5f5f5;
   .logo {
-    width: 147px;
-    height: 40px;
+    width: 74px;
+    height: 74px;
   }
   .title {
     font-size: 24px;

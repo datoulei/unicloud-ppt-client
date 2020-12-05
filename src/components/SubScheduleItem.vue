@@ -1,5 +1,5 @@
 <template>
-  <div class="sub-schedule-item pointer" @click="handlePlay">
+  <div :class="['sub-schedule-item', 'pointer', style]" @click="handlePlay">
     <template v-if="style === 'light'">
       <div class="p-t-24">
         <div class="light-body p-l-24 p-t-16 p-r-16">
@@ -177,6 +177,9 @@ export default {
 .sub-schedule-item {
   border-radius: 4px;
   overflow: hidden;
+  &.light {
+    overflow: visible;
+  }
 }
 .header {
   height: 48px;
@@ -236,10 +239,10 @@ export default {
   }
 }
 .light-body {
-  background: rgba(255, 255, 255, 1) rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 1);
   box-shadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.15);
   position: relative;
-  height: 142px;
+  min-height: 142px;
   .avatar {
     position: absolute;
     top: -24px;

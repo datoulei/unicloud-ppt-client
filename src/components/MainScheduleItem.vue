@@ -71,6 +71,7 @@ export default {
   border: 1px solid rgba(229, 229, 229, 1);
   cursor: pointer;
   border-radius: 4px;
+  overflow: hidden;
   .header {
     text-align: center;
     &.red {

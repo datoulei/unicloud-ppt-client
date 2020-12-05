@@ -1,8 +1,8 @@
 <template>
   <div class="home">
     <div class="header" flex="cross:center">
-      <img :src="logo" class="logo" />
       <p flex-box="1" class="title">{{ screen.displayName }}</p>
+      <img :src="logo" class="logo" />
     </div>
     <div class="body">
       <MainSchedulePanel :date="date" :mainSchedules="list" />
