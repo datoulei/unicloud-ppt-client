@@ -1,8 +1,8 @@
 <template>
-  <div class="page">
+  <div class="page drag">
     <img src="/images/icon_close.png" class="close-btn" @click="handleClose" />
     <img src="/images/login_logo.png" class="logo" />
-    <div class="main">
+    <div class="main no-drag">
       <h2 class="title">客户端登录</h2>
       <div class="body m-t-24">
         <div class="radio-group m-b-16">
