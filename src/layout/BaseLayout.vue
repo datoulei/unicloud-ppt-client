@@ -1,8 +1,8 @@
 <template>
   <a-layout>
-    <a-layout-header id="layoutHeader">
+    <!-- <a-layout-header id="layoutHeader">
       <Header />
-    </a-layout-header>
+    </a-layout-header> -->
     <a-layout-content>
       <router-view />
       <CustomFab />
@@ -34,7 +34,7 @@ export default {
   width: 100%;
 }
 .ant-layout-content {
-  margin-top: 48px;
+  // margin-top: 48px;
   // padding: 24px 32px;
   // min-height: calc(100vh - 48px);
   background-color: #fff;

@@ -1,12 +1,12 @@
 <template>
   <div class="page">
     <div class="header" flex="cross:center">
-      <div class="m-l-26" flex-box="1">
+      <div flex-box="1">
         <p class="title">{{ screen.name }}</p>
       </div>
       <img :src="logo" alt="" class="logo" />
     </div>
-    <div class="date" flex="cross:center">
+    <div :class="['date', style]" flex="cross:center">
       <a-icon
         type="clock-circle"
         :style="{ fontSize: '16px', color: '#B8B8B8' }"
@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import SubScheduleItem from '@/components/SubScheduleItem';
 export default {
   data() {
@@ -41,6 +41,7 @@ export default {
     ...mapState(['screen', 'column']),
     ...mapState('mainSchedule', { mainSchedule: 'selected' }),
     ...mapState('subSchedule', ['subSchedules']),
+    ...mapGetters(['style']),
     logo() {
       const loginType = this.$lowdb.get('loginType').value();
       if (loginType === 'internet') {
@@ -77,12 +78,15 @@ export default {
 
 <style lang="less" scoped>
 .header {
-  height: 100px;
+  height: 122px;
   padding: 0 24px;
   background: #f5f5f5;
   .logo {
-    width: 74px;
-    height: 74px;
+    width: 160px;
+    min-width: 160px;
+    max-width: 160px;
+    height: 80px;
+    margin-right: 28px;
   }
   .title {
     font-size: 24px;
@@ -103,9 +107,25 @@ export default {
 .date {
   margin-top: 26px;
   margin-left: 26px;
+  width: 220px;
+  height: 44px;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.1);
+  border-left: 3px solid transparent;
+  padding-left: 13px;
   font-size: 18px;
+  color: #333;
+  font-family: PingFangTC-Semibold, PingFangTC;
   font-weight: 600;
-  color: #333333;
+  &.red {
+    border-color: #f60f0f;
+  }
+  &.blue {
+    border-color: #2267e5;
+  }
+  &.light {
+    border-color: #222222;
+  }
 }
 .body {
   padding: 22px 25px;

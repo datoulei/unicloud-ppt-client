@@ -45,7 +45,7 @@ function createWindow() {
     width: 1352,
     height: 760,
     resizable: false,
-    // fullscreen: true,
+    fullscreen: true,
     // fullscreenable: true,
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone

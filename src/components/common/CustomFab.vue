@@ -8,14 +8,14 @@
       <a-tooltip placement="left" title="返回">
         <div class="menu-item back" @click="handleAction('back')"></div>
       </a-tooltip>
-      <a-tooltip placement="left" title="退出登录">
-        <div class="menu-item logout" @click="handleAction('logout')"></div>
-      </a-tooltip>
       <a-tooltip placement="left" title="刷新">
         <div class="menu-item refresh" @click="handleAction('refresh')"></div>
       </a-tooltip>
       <a-tooltip placement="left" title="切换列数">
         <div class="menu-item column" @click="handleAction('column')"></div>
+      </a-tooltip>
+      <a-tooltip placement="left" title="退出登录">
+        <div class="menu-item logout" @click="handleAction('logout')"></div>
       </a-tooltip>
     </div>
   </div>

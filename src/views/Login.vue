@@ -1,7 +1,10 @@
 <template>
   <div class="page drag">
-    <img src="/images/icon_close.png" class="close-btn" @click="handleClose" />
-    <img src="/images/login_logo.png" class="logo" />
+    <img
+      src="/images/icon_close.png"
+      class="close-btn no-drag"
+      @click="handleClose"
+    />
     <div class="main no-drag">
       <h2 class="title">客户端登录</h2>
       <div class="body m-t-24">

@@ -4,7 +4,7 @@
     @click="handleDetail"
   >
     <div :class="['header', style]">
-      <span class="time">{{ item.startTime }}</span>
+      <span class="time">{{ item.startTime }} - {{ item.endTime }}</span>
     </div>
     <div ref="container" class="body">
       <span ref="text" :class="['name', scroll && 'animate']">
@@ -72,6 +72,11 @@ export default {
   cursor: pointer;
   border-radius: 4px;
   overflow: hidden;
+  &:hover {
+    transform: scale(1.038897893);
+    transform-origin: center;
+    transition: all 0.1s ease-in-out;
+  }
   .header {
     text-align: center;
     &.red {
@@ -116,7 +121,8 @@ export default {
     flex-direction: row;
     align-items: stretch;
     .header {
-      width: 125px;
+      // width: 177px;
+      padding: 0 12px;
       height: 104px;
       line-height: 104px;
     }

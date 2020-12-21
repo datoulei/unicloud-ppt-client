@@ -83,7 +83,7 @@ export default {
       if (this.column === 1) {
         // 1列
         margin = 30;
-        const itemHeight = 104;
+        const itemHeight = 106;
         this.rowPerPage = Math.floor(height / (itemHeight + margin));
         this.pages = Math.ceil(this.mainSchedules.length / this.rowPerPage);
         console.log('column1 generatePages -> rowPerPage', this.rowPerPage);
@@ -135,12 +135,14 @@ export default {
     line-height: 32px;
   }
   .logo {
-    width: 74px;
-    height: 74px;
-    margin-right: 26px;
+    width: 160px;
+    min-width: 160px;
+    max-width: 160px;
+    height: 80px;
+    margin-right: 28px;
   }
 }
 .body {
-  padding: 24px;
+  padding: 30px 60px;
 }
 </style>
