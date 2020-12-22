@@ -11,7 +11,9 @@
         type="clock-circle"
         :style="{ fontSize: '16px', color: '#B8B8B8' }"
       ></a-icon>
-      <span class="m-l-8">{{ screen.date }}</span>
+      <span class="m-l-8">{{
+        $moment(screen.date).format('YYYY年MM月DD日')
+      }}</span>
     </div>
     <div class="body">
       <a-list
