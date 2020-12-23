@@ -121,7 +121,7 @@ export default {
     flex-direction: row;
     align-items: stretch;
     .header {
-      min-width: 178px;
+      min-width: 190px;
       padding: 0 12px;
       height: 104px;
       line-height: 104px;
