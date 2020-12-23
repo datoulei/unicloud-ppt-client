@@ -4,7 +4,7 @@
       <div flex-box="1">
         <p class="title">{{ screen.name }}</p>
       </div>
-      <img :src="logo" alt="" class="logo" />
+      <img v-show="logo" :src="logo" alt="" class="logo" />
     </div>
     <div :class="['date', style]" flex="cross:center">
       <a-icon
@@ -52,7 +52,7 @@ export default {
         const baseURL = this.$lowdb.get('baseURL').value();
         return `${baseURL}/${this.screen.logo}`;
       }
-      return '/images/logo.png';
+      return null;
     },
     duration() {
       const startTime = this.$moment(this.mainSchedule.startDate).format(

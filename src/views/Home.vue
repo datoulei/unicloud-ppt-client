@@ -2,7 +2,7 @@
   <div class="home">
     <div class="header" flex="cross:center">
       <p flex-box="1" class="title">{{ screen.displayName }}</p>
-      <img :src="logo" class="logo" />
+      <img v-show="logo" :src="logo" class="logo" />
     </div>
     <div class="body">
       <MainSchedulePanel :date="date" :mainSchedules="list" />
@@ -41,7 +41,7 @@ export default {
         const baseURL = this.$lowdb.get('baseURL').value();
         return `${baseURL}/${this.screen.logo}`;
       }
-      return '/images/logo.png';
+      return null;
     },
     list() {
       const start = this.column * this.rowPerPage * this.pageIndex;

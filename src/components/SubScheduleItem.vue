@@ -151,6 +151,8 @@ export default {
 .sub-schedule-item {
   border-radius: 4px;
   overflow: hidden;
+  min-height: 172px;
+  max-height: 172px;
   &:hover {
     transform: scale(1.014128728);
     transform-origin: center;
