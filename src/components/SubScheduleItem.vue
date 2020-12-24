@@ -2,8 +2,9 @@
   <div :class="['sub-schedule-item', 'pointer', style]" @click="handlePlay">
     <div :class="['header', style]" flex="cross:center">
       <span class="time" flex-box="1">{{ duration }}</span>
+      <img v-if="!item.ppt" src="/images/icon_refresh1.png" class="refresh" />
       <img
-        v-show="showDownloadButton"
+        v-else-if="showDownloadButton"
         src="/images/icon_download_white.png"
         class="download"
         @click.stop="handleCache"
@@ -181,15 +182,22 @@ export default {
     height: 32px;
     cursor: pointer;
   }
+  .refresh {
+    width: 32px;
+    height: 32px;
+    cursor: default;
+  }
 }
 .body {
   padding: 12px;
   background-color: #e5e5e5;
+  height: 172px - 48px;
   .avatar {
     width: 90px;
     min-width: 90px;
     height: 100px;
     border-radius: 4px;
+    background-color: #f5f5f5;
   }
   .content {
     width: 260px;
