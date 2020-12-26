@@ -25,6 +25,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
+import fs from 'fs-extra';
 export default {
   props: {
     item: {
@@ -66,7 +67,7 @@ export default {
     },
     showDownloadButton() {
       try {
-        return this.cacheTimestamp !== this.item.timestamp;
+        return !this.cacheFile || this.cacheTimestamp !== this.item.timestamp;
       } catch (error) {
         return true;
       }
@@ -140,9 +141,14 @@ export default {
     },
     async loadCache() {
       const key = `cache:${this.loginType}:${this.item.id}`;
-      this.cacheFile = this.$lowdb.get(key).value();
-      const timestampKey = `cache-timestamp:${this.loginType}:${this.item.id}`;
-      this.cacheTimestamp = this.$lowdb.get(timestampKey).value();
+      const cacheFile = this.$lowdb.get(key).value();
+      const isExist = fs.existsSync(cacheFile);
+      console.log('文件：%s， 是否存在：%s', cacheFile, isExist);
+      if (isExist) {
+        this.cacheFile = cacheFile;
+        const timestampKey = `cache-timestamp:${this.loginType}:${this.item.id}`;
+        this.cacheTimestamp = this.$lowdb.get(timestampKey).value();
+      }
     },
   },
 };
@@ -150,14 +156,16 @@ export default {
 
 <style lang="less" scoped>
 .sub-schedule-item {
-  border-radius: 4px;
+  border-radius: 5px;
   overflow: hidden;
   min-height: 172px;
   max-height: 172px;
+  box-shadow: 0px 6px 14px 0px rgba(0, 0, 0, 0.2);
   &:hover {
     transform: scale(1.014128728);
     transform-origin: center;
     transition: all 0.1s ease-in-out;
+    box-shadow: 0px 5px 6px 0px rgba(100, 100, 100, 0.5);
   }
 }
 .header {

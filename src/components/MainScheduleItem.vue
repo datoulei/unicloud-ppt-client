@@ -33,27 +33,29 @@ export default {
     ...mapGetters(['style']),
   },
   watch: {
+    item() {
+      this.calculateScroll();
+    },
     column() {
-      const container = this.$refs.container;
-      const text = this.$refs.text;
-      if (container.clientWidth < text.scrollWidth) {
-        this.scroll = true;
-      } else {
-        this.scroll = false;
-      }
+      this.calculateScroll();
     },
   },
   mounted() {
-    const container = this.$refs.container;
-    const text = this.$refs.text;
-    if (container.clientWidth < text.scrollWidth) {
-      this.scroll = true;
-    } else {
-      this.scroll = false;
-    }
+    this.calculateScroll();
   },
   methods: {
     ...mapActions('mainSchedule', ['selectMainSchedule']),
+    calculateScroll() {
+      this.$nextTick(() => {
+        const container = this.$refs.container;
+        const text = this.$refs.text;
+        if (container.clientWidth < text.scrollWidth) {
+          this.scroll = true;
+        } else {
+          this.scroll = false;
+        }
+      });
+    },
     handleDetail() {
       this.selectMainSchedule(this.item);
       this.$router.push({
@@ -68,7 +70,9 @@ export default {
 <style lang="less" scoped>
 .main-schedule-item {
   background: rgba(245, 245, 245, 1);
-  border: 1px solid rgba(229, 229, 229, 1);
+  border: 1px solid #e5e5e5;
+  // box-shadow: 0px 6px 14px 0px rgba(0, 0, 0, 0.2);
+
   cursor: pointer;
   border-radius: 4px;
   overflow: hidden;
@@ -76,6 +80,8 @@ export default {
     transform: scale(1.038897893);
     transform-origin: center;
     transition: all 0.1s ease-in-out;
+
+    box-shadow: 0px 5px 6px 0px rgba(0, 0, 0, 0.2);
   }
   .header {
     text-align: center;
