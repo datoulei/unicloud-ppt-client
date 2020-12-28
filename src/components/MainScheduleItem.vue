@@ -70,7 +70,7 @@ export default {
 <style lang="less" scoped>
 .main-schedule-item {
   background: rgba(245, 245, 245, 1);
-  border: 1px solid #e5e5e5;
+  // border: 1px solid #e5e5e5;
   // box-shadow: 0px 6px 14px 0px rgba(0, 0, 0, 0.2);
 
   cursor: pointer;

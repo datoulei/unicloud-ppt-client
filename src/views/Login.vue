@@ -69,7 +69,7 @@
           <a-form-model-item prop="ip">
             <a-input
               v-model="localForm.ip"
-              placeholder="请输入群晖IP"
+              placeholder="请输入服务器IP"
             ></a-input>
           </a-form-model-item>
           <a-form-model-item prop="code">
