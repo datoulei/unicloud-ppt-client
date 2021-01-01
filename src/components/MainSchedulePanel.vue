@@ -65,6 +65,8 @@ export default {
   color: #333;
   font-family: PingFangTC-Semibold, PingFangTC;
   font-weight: 600;
+  border-radius: 2px;
+  overflow: hidden;
   &.red {
     border-color: #f60f0f;
   }

@@ -125,7 +125,7 @@ export default {
         ],
       },
       localRules: {
-        ip: [{ required: true, message: 'IP不能为空', trigger: 'blur' }],
+        ip: [{ required: true, message: '服务器IP不能为空', trigger: 'blur' }],
         code: [{ required: true, message: '登录码不能为空', trigger: 'blur' }],
       },
     };
