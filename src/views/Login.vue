@@ -45,7 +45,7 @@
           <a-form-model-item prop="loginCode">
             <a-input
               v-model="internetForm.loginCode"
-              placeholder="请输入登录码"
+              placeholder="请输入屏幕登录码"
             ></a-input>
           </a-form-model-item>
           <a-form-model-item>
@@ -115,7 +115,7 @@ export default {
       },
       internetRules: {
         username: [
-          { required: true, message: '用户名不能为空', trigger: 'blur' },
+          { required: true, message: '账号不能为空', trigger: 'blur' },
         ],
         password: [
           { required: true, message: '密码不能为空', trigger: 'blur' },

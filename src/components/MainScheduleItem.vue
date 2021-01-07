@@ -69,12 +69,13 @@ export default {
 
 <style lang="less" scoped>
 .main-schedule-item {
-  background: rgba(245, 245, 245, 1);
+  background: #fff;
   // border: 1px solid #e5e5e5;
-  // box-shadow: 0px 6px 14px 0px rgba(0, 0, 0, 0.2);
+
+  box-shadow: 0px 5px 10px 0px rgba(102, 102, 102, 0.1);
 
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 5px;
   overflow: hidden;
   &:hover {
     transform: scale(1.038897893);
@@ -82,6 +83,8 @@ export default {
     transition: all 0.1s ease-in-out;
 
     box-shadow: 0px 5px 6px 0px rgba(0, 0, 0, 0.2);
+
+    box-shadow: 0px 5px 6px 0px rgba(0, 0, 0, 0.1);
   }
   .header {
     text-align: center;
@@ -89,13 +92,12 @@ export default {
       background-color: #f60f0f;
     }
     &.blue {
-      background-color: #2267e5;
+      background-color: #2a5fff;
     }
     &.light {
-      background-color: #fff;
-      box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.2);
+      background-color: #838383;
       .time {
-        color: #333;
+        color: #fff;
       }
     }
   }

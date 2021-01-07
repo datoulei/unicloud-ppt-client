@@ -125,10 +125,10 @@ export default {
     border-color: #f60f0f;
   }
   &.blue {
-    border-color: #2267e5;
+    border-color: #2a5fff;
   }
   &.light {
-    border-color: #222222;
+    border-color: #838383;
   }
 }
 .body {

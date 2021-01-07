@@ -2,7 +2,12 @@
   <div :class="['sub-schedule-item', 'pointer', style]" @click="handlePlay">
     <div :class="['header', style]" flex="cross:center">
       <span class="time" flex-box="1">{{ duration }}</span>
-      <img v-if="!item.ppt" src="/images/icon_refresh1.png" class="refresh" />
+      <img
+        v-if="!item.ppt"
+        src="/images/icon_refresh1.png"
+        class="refresh"
+        @click.stop="() => {}"
+      />
       <img
         v-else-if="showDownloadButton"
         src="/images/icon_download_white.png"
