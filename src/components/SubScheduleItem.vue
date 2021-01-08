@@ -1,30 +1,98 @@
 <template>
   <div :class="['sub-schedule-item', 'pointer', style]" @click="handlePlay">
-    <div :class="['header', style]" flex="cross:center">
-      <span class="time" flex-box="1">{{ duration }}</span>
-      <img
-        v-if="!item.ppt"
-        src="/images/icon_refresh1.png"
-        class="refresh"
-        @click.stop="() => {}"
-      />
-      <img
-        v-else-if="showDownloadButton"
-        src="/images/icon_download_white.png"
-        class="download"
-        @click.stop="handleCache"
-      />
-    </div>
-    <div class="body" flex>
-      <img v-show="avatar" :src="avatar" alt="" class="avatar" />
-      <div class="content m-l-12" flex-box="1">
+    <template v-if="style === 'blue'">
+      <div :class="['header', style]" flex="cross:center">
+        <span class="time" flex-box="1">{{ duration }}</span>
+        <img
+          v-if="!item.ppt"
+          src="/images/icon_refresh_blue.png"
+          class="refresh"
+          @click.stop="() => {}"
+        />
+        <img
+          v-else-if="showDownloadButton"
+          src="/images/icon_download_blue.png"
+          class="download"
+          @click.stop="handleCache"
+        />
+      </div>
+      <div class="body" flex>
+        <img v-show="avatar" :src="avatar" alt="" class="avatar" />
+        <div class="content m-l-12" flex-box="1">
+          <p class="name text-hidden">
+            {{ item.name }}
+          </p>
+          <p class="guest text-hidden m-t-10">{{ item.guestName }}</p>
+          <p class="work text-hidden">{{ item.work }}</p>
+        </div>
+      </div>
+    </template>
+    <template v-else-if="style === 'red'">
+      <div class="body">
+        <div class="icon-wrapper">
+          <img
+            v-if="!item.ppt"
+            src="/images/icon_refresh_red.png"
+            class="refresh"
+            @click.stop="() => {}"
+          />
+          <img
+            v-else-if="showDownloadButton"
+            src="/images/icon_download_red.png"
+            class="download"
+            @click.stop="handleCache"
+          />
+        </div>
         <p class="name text-hidden">
           {{ item.name }}
         </p>
-        <p class="guest text-hidden m-t-10">{{ item.guestName }}</p>
-        <p class="work text-hidden">{{ item.work }}</p>
+        <div flex>
+          <img
+            :src="avatar || '/images/default_avatar.png'"
+            alt=""
+            class="avatar"
+          />
+          <div class="content">
+            <p class="time">{{ duration }}</p>
+            <p class="guest text-hidden">{{ item.guestName }}</p>
+            <p class="work text-hidden">{{ item.work }}</p>
+          </div>
+        </div>
       </div>
-    </div>
+    </template>
+    <template v-else-if="style === 'light'">
+      <div class="body">
+        <img
+          :src="avatar || '/images/default_avatar.png'"
+          alt=""
+          class="avatar"
+        />
+        <div class="icon-wrapper">
+          <img
+            v-if="!item.ppt"
+            src="/images/icon_refresh_light.png"
+            class="refresh"
+            @click.stop="() => {}"
+          />
+          <img
+            v-else-if="showDownloadButton"
+            src="/images/icon_download_light.png"
+            class="download"
+            @click.stop="handleCache"
+          />
+        </div>
+        <div class="content">
+          <p class="guest text-hidden">{{ item.guestName }}</p>
+          <p class="work text-hidden">{{ item.work }}</p>
+        </div>
+        <div class="content1" flex>
+          <span class="time">{{ duration }}</span>
+          <span class="name text-hidden" flex-box="1">
+            {{ item.name }}
+          </span>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -162,82 +230,193 @@ export default {
 <style lang="less" scoped>
 .sub-schedule-item {
   border-radius: 5px;
-  overflow: hidden;
+  // overflow: hidden;
   min-height: 172px;
   max-height: 172px;
-  box-shadow: 0px 6px 14px 0px rgba(0, 0, 0, 0.2);
   &:hover {
     transform: scale(1.014128728);
     transform-origin: center;
     transition: all 0.1s ease-in-out;
-    box-shadow: 0px 5px 6px 0px rgba(100, 100, 100, 0.5);
-  }
-}
-.header {
-  height: 48px;
-  padding: 8px 16px;
-  color: #fff;
-  font-size: 24px;
-  font-family: OpenSans-SemiBold, OpenSans;
-  font-weight: 600;
-  line-height: 32px;
-  &.light {
-    background-color: #838383;
-  }
-  &.red {
-    background-color: #f60f0f;
-  }
-  &.blue {
-    background-color: #2267e5;
   }
   .download {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 31px;
     cursor: pointer;
   }
   .refresh {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     cursor: default;
   }
-}
-.body {
-  padding: 12px;
-  background-color: #e5e5e5;
-  height: 172px - 48px;
-  .avatar {
-    width: 90px;
-    min-width: 90px;
-    height: 100px;
-    border-radius: 4px;
-    background-color: #f5f5f5;
+  &.blue {
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0px 6px 14px 0px rgba(0, 0, 0, 0.2);
+    &:hover {
+      box-shadow: 0px 5px 6px 0px rgba(100, 100, 100, 0.5);
+    }
+    .header {
+      height: 48px;
+      padding: 8px 16px;
+      color: #fff;
+      font-size: 24px;
+      font-family: OpenSans-SemiBold, OpenSans;
+      font-weight: 600;
+      line-height: 32px;
+      background-color: #2a5fff;
+    }
+    .body {
+      padding: 12px;
+      background-color: #ffffff;
+      height: 172px - 48px;
+      .avatar {
+        width: 90px;
+        min-width: 90px;
+        height: 100px;
+        border-radius: 4px;
+        background-color: #f5f5f5;
+      }
+      .content {
+        width: 260px;
+      }
+      .guest {
+        height: 31px;
+        font-size: 16px;
+        font-family: PingFangTC-Semibold, PingFangTC;
+        font-weight: 600;
+        color: #333333;
+        line-height: 22px;
+      }
+      .name {
+        height: 24px;
+        font-size: 20px;
+        font-family: PingFangTC-Regular, PingFangTC;
+        font-weight: 400;
+        color: #333333;
+        line-height: 24px;
+      }
+      .work {
+        height: 14px;
+        font-size: 12px;
+        font-family: PingFangTC-Regular, PingFangTC;
+        font-weight: 400;
+        color: #333333;
+        line-height: 14px;
+      }
+    }
   }
-  .content {
-    width: 260px;
+  &.red {
+    .body {
+      min-height: 160px;
+      max-height: 160px;
+      border-left: 17px solid #f60f0f;
+      padding-left: 11px;
+      padding-top: 4px;
+      background: #ffffff;
+      box-shadow: 0px 4px 15px 0px rgba(0, 0, 0, 0.2);
+      .icon-wrapper {
+        position: absolute;
+        top: 19px;
+        right: 11px;
+      }
+      .name {
+        height: 44px;
+        font-size: 20px;
+        font-family: ArialMT;
+        color: #333333;
+        line-height: 32px;
+      }
+      .avatar {
+        width: 94px;
+        height: 94px;
+        border-radius: 4px;
+      }
+      .content {
+        margin-left: 14px;
+        .time {
+          height: 44px;
+          font-size: 20px;
+          font-family: ArialMT;
+          color: #333333;
+          line-height: 32px;
+        }
+        .guest {
+          height: 31px;
+          font-size: 24px;
+          font-family: Arial-BoldMT, Arial;
+          font-weight: normal;
+          color: #333333;
+          line-height: 28px;
+          margin-top: 4px;
+        }
+        .work {
+          height: 14px;
+          font-size: 12px;
+          font-family: ArialMT;
+          color: #999999;
+          line-height: 14px;
+          margin-top: 5px;
+        }
+      }
+    }
   }
-  .guest {
-    height: 31px;
-    font-size: 16px;
-    font-family: PingFangTC-Semibold, PingFangTC;
-    font-weight: 600;
-    color: #333333;
-    line-height: 22px;
-  }
-  .name {
-    height: 24px;
-    font-size: 20px;
-    font-family: PingFangTC-Regular, PingFangTC;
-    font-weight: 400;
-    color: #333333;
-    line-height: 24px;
-  }
-  .work {
-    height: 14px;
-    font-size: 12px;
-    font-family: PingFangTC-Regular, PingFangTC;
-    font-weight: 400;
-    color: #333333;
-    line-height: 14px;
+  &.light {
+    min-height: 165px;
+    max-height: 165px;
+    padding-top: 23px;
+    .body {
+      height: 142px;
+      background: #ffffff;
+      box-shadow: 0px 4px 15px 0px rgba(0, 0, 0, 0.2);
+      position: relative;
+      border-radius: 5px;
+      .avatar {
+        position: absolute;
+        left: 24px;
+        top: -23px;
+        width: 94px;
+        height: 94px;
+        border-radius: 4px;
+      }
+      .icon-wrapper {
+        position: absolute;
+        top: 19px;
+        right: 11px;
+      }
+      .content {
+        padding-left: 146px;
+        padding-top: 13px;
+        .guest {
+          font-size: 24px;
+          font-family: Arial-BoldMT, Arial;
+          font-weight: normal;
+          color: #333333;
+          line-height: 32px;
+        }
+        .work {
+          margin-top: 8px;
+          height: 20px;
+          font-size: 16px;
+          font-family: Arial-BoldMT, Arial;
+          font-weight: normal;
+          color: #333333;
+        }
+      }
+      .content1 {
+        margin-top: 20px;
+        padding-left: 3px;
+        height: 44px;
+        font-size: 20px;
+        font-family: Arial-BoldMT, Arial;
+        font-weight: normal;
+        color: #333333;
+        line-height: 32px;
+        .time {
+          width: 144px;
+          text-align: center;
+        }
+      }
+    }
   }
 }
 </style>
