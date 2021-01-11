@@ -7,7 +7,7 @@
           v-if="!item.ppt"
           src="/images/icon_refresh_blue.png"
           class="refresh"
-          @click.stop="() => {}"
+          @click.stop="handleEmpty"
         />
         <img
           v-else-if="showDownloadButton"
@@ -34,7 +34,7 @@
             v-if="!item.ppt"
             src="/images/icon_refresh_red.png"
             class="refresh"
-            @click.stop="() => {}"
+            @click.stop="handleEmpty"
           />
           <img
             v-else-if="showDownloadButton"
@@ -72,7 +72,7 @@
             v-if="!item.ppt"
             src="/images/icon_refresh_light.png"
             class="refresh"
-            @click.stop="() => {}"
+            @click.stop="handleEmpty"
           />
           <img
             v-else-if="showDownloadButton"
@@ -123,7 +123,10 @@ export default {
   },
   computed: {
     ...mapState(['loginType', 'baseURL']),
-    ...mapGetters(['style']),
+    // ...mapGetters(['style']),
+    style() {
+      return 'red';
+    },
     duration() {
       return `${this.item.startTime}-${this.item.endTime}`;
     },
@@ -155,6 +158,9 @@ export default {
   },
   methods: {
     async handlePlay() {
+      if (!this.item.ppt) {
+        return;
+      }
       if (this.cacheTimestamp === this.item.timestamp) {
         console.log('打开缓存');
         await this.$ipcRenderer.invoke('channel', {
@@ -223,6 +229,7 @@ export default {
         this.cacheTimestamp = this.$lowdb.get(timestampKey).value();
       }
     },
+    handleEmpty() {},
   },
 };
 </script>
@@ -270,9 +277,9 @@ export default {
       background-color: #ffffff;
       height: 172px - 48px;
       .avatar {
-        width: 90px;
-        min-width: 90px;
-        height: 100px;
+        width: 94px;
+        min-width: 94px;
+        height: 94px;
         border-radius: 4px;
         background-color: #f5f5f5;
       }
@@ -314,10 +321,11 @@ export default {
       padding-top: 4px;
       background: #ffffff;
       box-shadow: 0px 4px 15px 0px rgba(0, 0, 0, 0.2);
+      position: relative;
       .icon-wrapper {
         position: absolute;
         top: 19px;
-        right: 11px;
+        right: 10px;
       }
       .name {
         height: 44px;
