@@ -22,8 +22,8 @@
           <p class="name text-hidden">
             {{ item.name }}
           </p>
-          <p class="guest text-hidden m-t-10">{{ item.guestName }}</p>
-          <p class="work text-hidden">{{ item.work }}</p>
+          <p class="guest m-t-6 text-hidden">{{ item.guestName }}</p>
+          <p class="work m-t-3 text-hidden">{{ item.work }}</p>
         </div>
       </div>
     </template>
@@ -54,8 +54,8 @@
           />
           <div class="content">
             <p class="time">{{ duration }}</p>
-            <p class="guest text-hidden">{{ item.guestName }}</p>
-            <p class="work text-hidden">{{ item.work }}</p>
+            <p class="guest m-t-6 text-hidden">{{ item.guestName }}</p>
+            <p class="work m-t-2 text-hidden">{{ item.work }}</p>
           </div>
         </div>
       </div>
@@ -123,10 +123,10 @@ export default {
   },
   computed: {
     ...mapState(['loginType', 'baseURL']),
-    ...mapGetters(['style']),
-    // style() {
-    //   return 'red';
-    // },
+    // ...mapGetters(['style']),
+    style() {
+      return 'light';
+    },
     duration() {
       return `${this.item.startTime}-${this.item.endTime}`;
     },
@@ -238,8 +238,8 @@ export default {
 .sub-schedule-item {
   border-radius: 5px;
   // overflow: hidden;
-  min-height: 172px;
-  max-height: 172px;
+  min-height: 160px;
+  max-height: 160px;
   &:hover {
     transform: scale(1.014128728);
     transform-origin: center;
@@ -259,27 +259,25 @@ export default {
     border-radius: 5px;
     overflow: hidden;
     box-shadow: 0px 6px 14px 0px rgba(0, 0, 0, 0.2);
-    &:hover {
-      box-shadow: 0px 5px 6px 0px rgba(100, 100, 100, 0.5);
-    }
+    // &:hover {
+    //   box-shadow: 0px 5px 6px 0px rgba(100, 100, 100, 0.5);
+    // }
     .header {
-      height: 48px;
+      height: 32px;
       padding: 8px 16px;
       color: #fff;
-      font-size: 24px;
-      font-family: OpenSans-SemiBold, OpenSans;
-      font-weight: 600;
+      font-size: 20px;
+      font-weight: bold;
       line-height: 32px;
       background-color: #2a5fff;
     }
     .body {
-      padding: 12px;
+      padding: 16px 15px;
       background-color: #ffffff;
-      height: 172px - 48px;
       .avatar {
-        width: 94px;
-        min-width: 94px;
-        height: 94px;
+        width: 96px;
+        min-width: 96px;
+        height: 96px;
         border-radius: 4px;
         background-color: #f5f5f5;
       }
@@ -288,26 +286,20 @@ export default {
       }
       .guest {
         height: 31px;
-        font-size: 16px;
-        font-family: PingFangTC-Semibold, PingFangTC;
-        font-weight: 600;
+        font-size: 24px;
+        font-weight: bold;
         color: #333333;
-        line-height: 22px;
+        line-height: 28px;
       }
       .name {
-        height: 24px;
+        height: 44px;
         font-size: 20px;
-        font-family: PingFangTC-Regular, PingFangTC;
-        font-weight: 400;
         color: #333333;
-        line-height: 24px;
       }
       .work {
         height: 14px;
         font-size: 12px;
-        font-family: PingFangTC-Regular, PingFangTC;
-        font-weight: 400;
-        color: #333333;
+        color: #999999;
         line-height: 14px;
       }
     }
@@ -318,10 +310,12 @@ export default {
       max-height: 160px;
       border-left: 17px solid #f60f0f;
       padding-left: 11px;
-      padding-top: 4px;
       background: #ffffff;
       box-shadow: 0px 4px 15px 0px rgba(0, 0, 0, 0.2);
       position: relative;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
+      overflow: hidden;
       .icon-wrapper {
         position: absolute;
         top: 19px;
@@ -332,12 +326,14 @@ export default {
         font-size: 20px;
         font-family: ArialMT;
         color: #333333;
-        line-height: 32px;
+        line-height: 44px;
+        margin-right: 40px;
       }
       .avatar {
         width: 94px;
         height: 94px;
         border-radius: 4px;
+        margin-top: 2px;
       }
       .content {
         margin-left: 14px;
@@ -346,7 +342,7 @@ export default {
           font-size: 20px;
           font-family: ArialMT;
           color: #333333;
-          line-height: 32px;
+          // line-height: 32px;
         }
         .guest {
           height: 31px;
@@ -355,7 +351,6 @@ export default {
           font-weight: normal;
           color: #333333;
           line-height: 28px;
-          margin-top: 4px;
         }
         .work {
           height: 14px;
@@ -363,7 +358,6 @@ export default {
           font-family: ArialMT;
           color: #999999;
           line-height: 14px;
-          margin-top: 5px;
         }
       }
     }
@@ -382,8 +376,8 @@ export default {
         position: absolute;
         left: 24px;
         top: -23px;
-        width: 94px;
-        height: 94px;
+        width: 105px;
+        height: 105px;
         border-radius: 4px;
       }
       .icon-wrapper {
@@ -402,16 +396,14 @@ export default {
           line-height: 32px;
         }
         .work {
-          margin-top: 8px;
+          margin-top: 5px;
           height: 20px;
-          font-size: 16px;
-          font-family: Arial-BoldMT, Arial;
-          font-weight: normal;
-          color: #333333;
+          font-size: 12px;
+          color: #999999;
         }
       }
       .content1 {
-        margin-top: 20px;
+        margin-top: 27px;
         padding-left: 3px;
         height: 44px;
         font-size: 20px;
@@ -421,6 +413,7 @@ export default {
         line-height: 32px;
         .time {
           width: 144px;
+          min-width: 144px;
           text-align: center;
         }
       }
