@@ -17,7 +17,7 @@
         />
       </div>
       <div class="body" flex>
-        <img v-show="avatar" :src="avatar" alt="" class="avatar" />
+        <img :src="avatar || '/images/default_avatar.png'" class="avatar" />
         <div class="content m-l-12" flex-box="1">
           <p class="name text-hidden">
             {{ item.name }}
@@ -123,10 +123,10 @@ export default {
   },
   computed: {
     ...mapState(['loginType', 'baseURL']),
-    // ...mapGetters(['style']),
-    style() {
-      return 'red';
-    },
+    ...mapGetters(['style']),
+    // style() {
+    //   return 'red';
+    // },
     duration() {
       return `${this.item.startTime}-${this.item.endTime}`;
     },

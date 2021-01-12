@@ -78,7 +78,7 @@ export default {
   border-radius: 5px;
   overflow: hidden;
   &:hover {
-    transform: scale(1.038897893);
+    transform: scale(1.02);
     transform-origin: center;
     transition: all 0.1s ease-in-out;
 
