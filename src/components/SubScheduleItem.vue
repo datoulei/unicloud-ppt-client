@@ -125,7 +125,7 @@ export default {
     ...mapState(['loginType', 'baseURL']),
     // ...mapGetters(['style']),
     style() {
-      return 'light';
+      return 'blue';
     },
     duration() {
       return `${this.item.startTime}-${this.item.endTime}`;
@@ -246,13 +246,11 @@ export default {
     transition: all 0.1s ease-in-out;
   }
   .download {
-    width: 40px;
-    height: 31px;
+    width: 30px;
     cursor: pointer;
   }
   .refresh {
-    width: 28px;
-    height: 28px;
+    width: 30px;
     cursor: default;
   }
   &.blue {
@@ -318,7 +316,7 @@ export default {
       overflow: hidden;
       .icon-wrapper {
         position: absolute;
-        top: 19px;
+        top: 6px;
         right: 10px;
       }
       .name {
@@ -382,8 +380,8 @@ export default {
       }
       .icon-wrapper {
         position: absolute;
-        top: 19px;
-        right: 11px;
+        top: 15px;
+        right: 14px;
       }
       .content {
         padding-left: 146px;
