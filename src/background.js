@@ -32,6 +32,8 @@ let win;
 let loginWin;
 let timerWin;
 let previewWin;
+let minutes = 30;
+let position;
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -105,7 +107,28 @@ function createLoginWindow() {
   });
 }
 
-function createTimerWindow(minutes = 30, position) {
+const watchPowerPointOpen = async () => {
+  const list = await psList();
+  const pptList = list.filter((item) => /powerpnt/gi.test(item.name));
+  log.info('watchPowerPointClose -> pptList', pptList);
+  if (pptList.length == 0) {
+    log.info('PPT未打开，休眠1秒');
+    var interval = setInterval(function () {
+      psList().then((list) => {
+        const pptList = list.filter((item) => /powerpnt/gi.test(item.name));
+        if (pptList.length > 0) {
+          clearInterval(interval);
+          createTimerWindow();
+        }
+      });
+    }, 1000);
+  } else {
+    log.info('PPT打开，开始创建倒计时');
+    createTimerWindow();
+  }
+};
+
+function createTimerWindow() {
   log.info('open timer window');
   let display = screen.getPrimaryDisplay();
   let x = display.bounds.x;
@@ -214,7 +237,6 @@ function createTimerWindow(minutes = 30, position) {
 
 const watchPowerPointClose = async () => {
   const list = await psList();
-  console.log(list);
   const pptList = list.filter((item) => /powerpnt/gi.test(item.name));
   log.info('watchPowerPointClose -> pptList', pptList);
   if (pptList.length > 0) {
@@ -230,7 +252,7 @@ const watchPowerPointClose = async () => {
           } catch (error) {}
         }
       });
-    }, 50);
+    }, 500);
   } else {
     log.info('检测不到ppt程序');
   }
@@ -508,9 +530,9 @@ ipcMain.handle('channel', (event, { type, data }) => {
         try {
           timerWin.close();
         } catch (error) {}
-        setTimeout(() => {
-          createTimerWindow(data.minutes, data.position);
-        }, 3000);
+        minutes = data.minutes;
+        position = data.position;
+        watchPowerPointOpen();
       }
       return { code: 1 };
     case 'cacheFile':
@@ -534,9 +556,9 @@ ipcMain.handle('channel', (event, { type, data }) => {
         try {
           timerWin.close();
         } catch (error) {}
-        setTimeout(() => {
-          createTimerWindow(data.minutes, data.position);
-        }, 3000);
+        minutes = data.minutes;
+        position = data.position;
+        watchPowerPointOpen();
       }
       return { code: 1 };
     default:
