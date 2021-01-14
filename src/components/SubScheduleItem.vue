@@ -123,10 +123,10 @@ export default {
   },
   computed: {
     ...mapState(['loginType', 'baseURL']),
-    // ...mapGetters(['style']),
-    style() {
-      return 'red';
-    },
+    ...mapGetters(['style']),
+    // style() {
+    //   return 'red';
+    // },
     duration() {
       return `${this.item.startTime}-${this.item.endTime}`;
     },
