@@ -23,7 +23,7 @@
             {{ item.name }}
           </p>
           <p class="guest m-t-6 text-hidden">{{ item.guestName }}</p>
-          <p class="work m-t-3 text-hidden">{{ item.work }}</p>
+          <p class="work text-hidden">{{ item.work }}</p>
         </div>
       </div>
     </template>
@@ -123,10 +123,10 @@ export default {
   },
   computed: {
     ...mapState(['loginType', 'baseURL']),
-    ...mapGetters(['style']),
-    // style() {
-    //   return 'blue';
-    // },
+    // ...mapGetters(['style']),
+    style() {
+      return 'red';
+    },
     duration() {
       return `${this.item.startTime}-${this.item.endTime}`;
     },
@@ -304,6 +304,7 @@ export default {
   }
   &.red {
     .body {
+      padding-top: 4px;
       min-height: 160px;
       max-height: 160px;
       border-left: 17px solid #f60f0f;
@@ -326,15 +327,19 @@ export default {
         color: #333333;
         line-height: 44px;
         margin-right: 40px;
+        font-weight: bold;
       }
       .avatar {
         width: 94px;
+        min-width: 94px;
         height: 94px;
         border-radius: 4px;
         margin-top: 2px;
       }
       .content {
+        min-width: 0;
         margin-left: 14px;
+        padding-right: 40px;
         .time {
           height: 44px;
           font-size: 20px;
@@ -345,8 +350,7 @@ export default {
         .guest {
           height: 31px;
           font-size: 24px;
-          font-family: Arial-BoldMT, Arial;
-          font-weight: normal;
+          font-weight: bold;
           color: #333333;
           line-height: 28px;
         }
@@ -388,8 +392,7 @@ export default {
         padding-top: 13px;
         .guest {
           font-size: 24px;
-          font-family: Arial-BoldMT, Arial;
-          font-weight: normal;
+          font-weight: bold;
           color: #333333;
           line-height: 32px;
         }
@@ -403,10 +406,10 @@ export default {
       .content1 {
         margin-top: 27px;
         padding-left: 3px;
+        padding-right: 44px;
         height: 44px;
         font-size: 20px;
-        font-family: Arial-BoldMT, Arial;
-        font-weight: normal;
+        font-weight: bold;
         color: #333333;
         line-height: 32px;
         .time {
