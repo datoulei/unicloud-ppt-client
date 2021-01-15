@@ -2,7 +2,7 @@
   <div class="page">
     <div class="header" flex="cross:center">
       <div flex-box="1">
-        <p class="title">{{ screen.name }}</p>
+        <p class="title">{{ screen.displayName }}</p>
       </div>
       <img v-show="logo" :src="logo" alt="" class="logo" />
     </div>

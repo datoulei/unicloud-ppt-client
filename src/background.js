@@ -110,7 +110,7 @@ function createLoginWindow() {
 const watchPowerPointOpen = async () => {
   const list = await psList();
   const pptList = list.filter((item) => /powerpnt/gi.test(item.name));
-  log.info('watchPowerPointClose -> pptList', pptList);
+  log.info('watchPowerPointOpen -> pptList', pptList);
   if (pptList.length == 0) {
     log.info('PPT未打开，休眠1秒');
     var interval = setInterval(function () {
