@@ -125,7 +125,7 @@ export default {
     ...mapState(['loginType', 'baseURL']),
     ...mapGetters(['style']),
     // style() {
-    //   return 'red';
+    //   return 'light';
     // },
     duration() {
       return `${this.item.startTime}-${this.item.endTime}`;
@@ -399,6 +399,7 @@ export default {
         .work {
           margin-top: 5px;
           height: 20px;
+          padding-right: 44px;
           font-size: 12px;
           color: #999999;
         }
