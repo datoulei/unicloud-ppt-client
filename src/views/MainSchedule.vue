@@ -96,6 +96,7 @@ export default {
     font-weight: 600;
     color: rgba(51, 51, 51, 1);
     line-height: 32px;
+    white-space: pre;
   }
 
   .time {
