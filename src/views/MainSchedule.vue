@@ -22,7 +22,11 @@
         :split="false"
       >
         <a-list-item slot="renderItem" slot-scope="item">
-          <SubScheduleItem :item="item" />
+          <SubScheduleItem
+            :item="item"
+            @open-cache="handleOpenCache"
+            @preview="handlePreview"
+          />
         </a-list-item>
       </a-list>
     </div>
@@ -36,6 +40,7 @@ export default {
   data() {
     return {
       loading: true,
+      lock: false,
     };
   },
   components: { SubScheduleItem },
@@ -73,6 +78,28 @@ export default {
         await this.getSubSchedules();
       } catch (error) {}
       this.loading = false;
+    },
+    handleOpenCache(data) {
+      if (this.lock) return;
+      this.$ipcRenderer.invoke('channel', {
+        type: 'openCacheFile',
+        data,
+      });
+      this.lock = true;
+      setTimeout(() => {
+        this.lock = false;
+      }, 10 * 1000);
+    },
+    handlePreview(data) {
+      if (this.lock) return;
+      this.$ipcRenderer.invoke('channel', {
+        type: 'preview',
+        data,
+      });
+      this.lock = true;
+      setTimeout(() => {
+        this.lock = false;
+      }, 10 * 1000);
     },
   },
 };

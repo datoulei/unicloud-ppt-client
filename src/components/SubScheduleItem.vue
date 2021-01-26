@@ -163,27 +163,37 @@ export default {
       }
       if (this.cacheTimestamp === this.item.timestamp) {
         console.log('打开缓存');
-        await this.$ipcRenderer.invoke('channel', {
-          type: 'openCacheFile',
-          data: {
-            url: this.cacheFile,
-            minutes: this.item.minutes,
-            position: this.item.position,
-          },
+        this.$emit('open-cache', {
+          url: this.cacheFile,
+          minutes: this.item.minutes,
+          position: this.item.position,
         });
+        // await this.$ipcRenderer.invoke('channel', {
+        //   type: 'openCacheFile',
+        //   data: {
+        //     url: this.cacheFile,
+        //     minutes: this.item.minutes,
+        //     position: this.item.position,
+        //   },
+        // });
       } else if (this.item.ppt) {
         let url = this.item.ppt;
         if (this.loginType === 'local') {
           url = `${this.baseURL}/${url}`;
         }
-        this.$ipcRenderer.invoke('channel', {
-          type: 'preview',
-          data: {
-            url,
-            minutes: this.item.minutes,
-            position: this.item.position,
-          },
+        this.$emit('preview', {
+          url,
+          minutes: this.item.minutes,
+          position: this.item.position,
         });
+        // this.$ipcRenderer.invoke('channel', {
+        //   type: 'preview',
+        //   data: {
+        //     url,
+        //     minutes: this.item.minutes,
+        //     position: this.item.position,
+        //   },
+        // });
       }
     },
     async handleCache() {
