@@ -525,14 +525,14 @@ ipcMain.handle('channel', (event, { type, data }) => {
           },
         });
         previewWin.webContents.downloadURL(data.url);
-      }
-      if (data.minutes > 0) {
-        try {
-          timerWin.close();
-        } catch (error) {}
-        minutes = data.minutes;
-        position = data.position;
-        watchPowerPointOpen();
+        if (data.minutes > 0) {
+          try {
+            timerWin.close();
+          } catch (error) {}
+          minutes = data.minutes;
+          position = data.position;
+          watchPowerPointOpen();
+        }
       }
       return { code: 1 };
     case 'cacheFile':
@@ -546,19 +546,19 @@ ipcMain.handle('channel', (event, { type, data }) => {
       cacheModal.webContents.downloadURL(data.url);
       return { code: 1 };
     case 'openCacheFile':
-      // if (data.url.includes('.pdf')) {
-      //   log.info('预览pdf文件')
-      //   shell.openPath(data.url)
-      // } else {
-      // }
-      shell.openPath(data.url);
-      if (data.minutes > 0) {
-        try {
-          timerWin.close();
-        } catch (error) {}
-        minutes = data.minutes;
-        position = data.position;
-        watchPowerPointOpen();
+      if (data.url.includes('.pdf')) {
+        log.info('预览pdf文件');
+        shell.openPath(data.url);
+      } else {
+        shell.openPath(data.url);
+        if (data.minutes > 0) {
+          try {
+            timerWin.close();
+          } catch (error) {}
+          minutes = data.minutes;
+          position = data.position;
+          watchPowerPointOpen();
+        }
       }
       return { code: 1 };
     default:
