@@ -1,7 +1,8 @@
 <template>
   <div class="home">
     <div class="header" flex="cross:center">
-      <p flex-box="1" class="title">{{ screen.displayName }}</p>
+      <p class="title">{{ screen.displayName }}</p>
+      <span flex-box="1"></span>
       <img v-show="logo" :src="logo" class="logo" />
     </div>
     <div class="body">

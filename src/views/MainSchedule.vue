@@ -1,9 +1,8 @@
 <template>
   <div class="page">
     <div class="header" flex="cross:center">
-      <div flex-box="1">
-        <p class="title">{{ screen.displayName }}</p>
-      </div>
+      <p class="title">{{ screen.displayName }}</p>
+      <span flex-box="1"> </span>
       <img v-show="logo" :src="logo" alt="" class="logo" />
     </div>
     <div :class="['date', style]" flex="cross:center">
@@ -123,7 +122,12 @@ export default {
     font-weight: 600;
     color: rgba(51, 51, 51, 1);
     line-height: 32px;
-    white-space: pre;
+    max-width: 1000px;
+    line-clamp: 3;
+    max-height: 96px;
+    white-space: pre-wrap;
+    overflow: hidden;
+    -webkit-line-clamp: 3;
   }
 
   .time {
